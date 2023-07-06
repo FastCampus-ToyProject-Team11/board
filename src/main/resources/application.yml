@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: fc11
+    password:
+
+  sql:
+    init:
+      schema-locations: classpath:db/table.sql
+      data-locations: classpath:db/data.sql
+
+  h2:
+    console:
+      enabled: true
+
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: true
+
+mybatis:
+  mapper-locations: classpath:mapper/**.xml
+  configuration:
+    map-underscore-to-camel-case: true
