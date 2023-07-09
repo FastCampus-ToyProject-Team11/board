@@ -13,13 +13,20 @@ public class SecurityConfig {
         http
                 .csrf().disable()
 
-                .authorizeRequests()
-                .antMatchers("/h2-console/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .headers().frameOptions().sameOrigin()
 
-                .and().headers().frameOptions().sameOrigin();
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/", "/auth/**", "/js/**", "/css/**", "/image/**", "/h2-console/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+
+                .and()
+                    .formLogin()
+                    .loginPage("/auth/loginForm")
+                    .loginProcessingUrl("/auth/loginProc")
+                    .defaultSuccessUrl("/");
 
         return http.build();
     }
