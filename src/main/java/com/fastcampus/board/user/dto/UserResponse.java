@@ -1,8 +1,7 @@
 package com.fastcampus.board.user.dto;
 
 import com.fastcampus.board.user.User;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 public class UserResponse {
 
@@ -15,6 +14,21 @@ public class UserResponse {
 
         public static JoinDTO from(User user) {
             return JoinDTO.builder()
+                    .username(user.getUsername())
+                    .nickName(user.getNickName())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class LoginDTO {
+
+        private String username;
+        private String nickName;
+
+        public static LoginDTO from(User user) {
+            return LoginDTO.builder()
                     .username(user.getUsername())
                     .nickName(user.getNickName())
                     .build();
