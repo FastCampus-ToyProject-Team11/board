@@ -7,11 +7,15 @@ import org.springframework.http.HttpStatus;
 
 public class ApiResponse {
 
+    private ApiResponse() {
+        throw new IllegalArgumentException("Suppress default constructor");
+    }
+
     public static <T> Result<T> success(T response) {
         return new Result<>(true, response, null);
     }
 
-    public static Result<?> error(String message, HttpStatus status) {
+    public static Result<Object> error(String message, HttpStatus status) {
         return new Result<>(false, null, new Error(message, status.value()));
     }
 
