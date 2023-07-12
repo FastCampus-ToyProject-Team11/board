@@ -10,6 +10,10 @@ import javax.validation.constraints.Size;
 
 public class UserRequest {
 
+    private UserRequest() {
+        throw new IllegalArgumentException("Suppress default constructor");
+    }
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -34,10 +38,10 @@ public class UserRequest {
         private String nickName;
 
         public User toEntityWithHashPassword(PasswordEncoder passwordEncoder) {
-            String password = passwordEncoder.encode(this.password);
+            String encodedPassword = passwordEncoder.encode(this.password);
             return User.builder()
                     .username(username)
-                    .password(password)
+                    .password(encodedPassword)
                     .email(email)
                     .nickName(nickName)
                     .build();

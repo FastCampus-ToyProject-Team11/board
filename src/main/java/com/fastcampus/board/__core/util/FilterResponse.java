@@ -9,6 +9,10 @@ import java.io.IOException;
 
 public class FilterResponse {
 
+    private FilterResponse() {
+        throw new IllegalArgumentException("Suppress default constructor");
+    }
+
     private static final ObjectMapper OBJECT_MAPPER;
 
     static {
