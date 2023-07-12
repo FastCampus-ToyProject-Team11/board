@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fastcampus.board.__core.errors.ErrorMessage;
 import com.fastcampus.board.__core.errors.exception.Exception401;
 import com.fastcampus.board.__core.util.FilterResponse;
 import com.fastcampus.board.user.Role;
@@ -57,15 +58,15 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                     );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("인증 객체 만들어짐");
+            log.info("JWT created: authentication object is creation");
             chain.doFilter(request, response);
 
         } catch (SignatureVerificationException sve) {
-            FilterResponse.unAuthorized(response, new Exception401("토큰이 검증되지 않았습니다."));
+            FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.TOKEN_UN_AUTHORIZED));
         } catch (TokenExpiredException tee) {
-            FilterResponse.unAuthorized(response, new Exception401("만료된 토큰입니다."));
+            FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.TOKEN_EXPIRED));
         } catch (JWTDecodeException exception) {
-            FilterResponse.unAuthorized(response, new Exception401("검증 실패"));
+            FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.TOKEN_VERIFICATION_FAILED));
         }
     }
 }

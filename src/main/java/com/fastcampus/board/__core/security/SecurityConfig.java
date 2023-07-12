@@ -48,20 +48,17 @@ public class SecurityConfig {
 
                 .apply(new SecurityFilterManager())
 
-                .and().exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-                    FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.UN_AUTHORIZED));
-                })
+                .and().exceptionHandling().authenticationEntryPoint((request, response, authException) ->
+                        FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.UN_AUTHORIZED)))
 
-                .and().exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
-                    FilterResponse.forbidden(response, new Exception403(ErrorMessage.FORBIDDEN));
-                })
+                .and().exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) ->
+                        FilterResponse.forbidden(response, new Exception403(ErrorMessage.FORBIDDEN)))
 
-                .and().authorizeRequests(expressionInterceptUrlRegistry -> {
-                    expressionInterceptUrlRegistry
-                            .antMatchers("/auth/**").authenticated()
-                            .antMatchers("/admin/**").access("hasRole('ADMIN')")
-                            .anyRequest().permitAll();
-                });
+                .and().authorizeRequests(expressionInterceptUrlRegistry ->
+                        expressionInterceptUrlRegistry
+                        .antMatchers("/auth/**").authenticated()
+                        .antMatchers("/admin/**").access("hasRole('ADMIN')")
+                        .anyRequest().permitAll());
 
         return http.build();
     }

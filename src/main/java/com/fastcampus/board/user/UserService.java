@@ -1,5 +1,7 @@
 package com.fastcampus.board.user;
 
+import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.__core.security.JwtTokenProvider;
 import com.fastcampus.board.__core.security.PrincipalUserDetail;
 import com.fastcampus.board.user.dto.UserRequest;
@@ -22,7 +24,7 @@ public class UserService {
 
     @Transactional
     public UserResponse.JoinDTO save(UserRequest.JoinDTO joinDTO) throws IllegalArgumentException {
-        if (joinDTO == null) throw new IllegalArgumentException("회원가입 데이터 오류");
+        if (joinDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_TO_JOIN);
 
         User user = joinDTO.toEntityWithHashPassword(passwordEncoder);
 
@@ -31,6 +33,7 @@ public class UserService {
     }
 
     public UserResponse.LoginDTOWithJWT login(UserRequest.LoginDTO loginDTO) {
+        if (loginDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_TO_LOGIN);
 
         UsernamePasswordAuthenticationToken token
                 = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
