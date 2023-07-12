@@ -22,6 +22,21 @@ public class UserResponse {
 
     @Getter
     @Builder
+    public static class LoginDTOWithJWT {
+
+        private LoginDTO loginDTO;
+        private String jwt;
+
+        public static LoginDTOWithJWT from(LoginDTO loginDTO, String jwt) {
+            return LoginDTOWithJWT.builder()
+                    .loginDTO(loginDTO)
+                    .jwt(jwt)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
     public static class LoginDTO {
 
         private String username;
