@@ -1,8 +1,7 @@
 package com.fastcampus.board.user.dto;
 
 import com.fastcampus.board.user.User;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +11,9 @@ import javax.validation.constraints.Size;
 public class UserRequest {
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     @ToString
     public static class JoinDTO {
 
