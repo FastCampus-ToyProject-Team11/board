@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,9 @@ public class UserController {
 
     @PostMapping("/join")
     @ResponseBody
-    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinDTO joinDTO) {
+    public ResponseEntity<ApiResponse.Result<UserResponse.JoinDTO>> join(
+            @RequestBody @Valid UserRequest.JoinDTO joinDTO, Errors errors) {
+
         log.info("/join POST " + joinDTO);
 
         UserResponse.JoinDTO joinResponse = userService.save(joinDTO);
@@ -40,7 +43,9 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO loginDTO) {
+    public ResponseEntity<ApiResponse.Result<UserResponse.LoginDTO>> login(
+            @RequestBody @Valid UserRequest.LoginDTO loginDTO, Errors errors) {
+
         log.info("/join POST " + loginDTO);
 
         UserResponse.LoginDTOWithJWT loginDTOWithJWT = userService.login(loginDTO);
@@ -50,6 +55,6 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .header(JwtTokenProvider.HEADER, jwt)
-                .body(loginResponse);
+                .body(ApiResponse.success(loginResponse));
     }
 }
