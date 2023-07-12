@@ -5,6 +5,10 @@ import lombok.*;
 
 public class UserResponse {
 
+    private UserResponse() {
+        throw new IllegalArgumentException("Suppress default constructor");
+    }
+
     @Getter
     @Builder
     public static class JoinDTO {
