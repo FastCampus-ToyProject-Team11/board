@@ -19,7 +19,7 @@ public class Exception400 extends RuntimeException {
         this.value = value;
     }
 
-    public ApiResponse.Result<?> body(){
+    public ApiResponse.Result<Object> body(){
         return ApiResponse.error(getMessage(), HttpStatus.BAD_REQUEST);
     }
 
