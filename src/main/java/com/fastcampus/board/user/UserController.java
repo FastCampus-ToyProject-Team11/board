@@ -1,5 +1,7 @@
 package com.fastcampus.board.user;
 
+import com.fastcampus.board.__core.security.JwtTokenProvider;
+import com.fastcampus.board.__core.util.ApiResponse;
 import com.fastcampus.board.user.dto.UserRequest;
 import com.fastcampus.board.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,21 @@ public class UserController {
         log.info("/join POST " + joinDTO);
 
         UserResponse.JoinDTO joinResponse = userService.save(joinDTO);
-        return ResponseEntity.ok(joinResponse);
+        return ResponseEntity.ok(ApiResponse.success(joinResponse));
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO loginDTO) {
+        log.info("/join POST " + loginDTO);
+
+        UserResponse.LoginDTOWithJWT loginDTOWithJWT = userService.login(loginDTO);
+
+        String jwt = loginDTOWithJWT.getJwt();
+        UserResponse.LoginDTO loginResponse = loginDTOWithJWT.getLoginDTO();
+
+        return ResponseEntity.ok()
+                .header(JwtTokenProvider.HEADER, jwt)
+                .body(loginResponse);
     }
 }
