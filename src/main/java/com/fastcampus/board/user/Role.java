@@ -1,16 +1,17 @@
 package com.fastcampus.board.user;
 
+import com.fastcampus.board.__core.errors.exception.Exception500;
+
+import java.util.Objects;
+
 public enum Role {
-    SESAC("새싹회원"),
-    EXCELLENT("우수회원");
+    SESAC,
+    EXCELLENT;
 
-    private final String value;
-
-    Role(String value) {
-        this.value = value;
-    }
-
-    public String value() {
-        return value;
+    public static Role from(String name) {
+        for (Role role : Role.values()) {
+            if (Objects.equals(role.name(), name)) return role;
+        }
+        throw new Exception500("권한 매칭 오류");
     }
 }
