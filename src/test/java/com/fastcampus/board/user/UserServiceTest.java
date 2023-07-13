@@ -1,6 +1,7 @@
 package com.fastcampus.board.user;
 
 import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.DuplicateNickNameException;
 import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.user.dto.UserRequest;
 import com.fastcampus.board.user.dto.UserResponse;
@@ -88,7 +89,7 @@ class UserServiceTest {
 
     @DisplayName("회원 수정 실패 테스트 - 잘못된 유저네임 요청")
     @Test
-    void update_failed_test_invalidUsername() {
+    void update_Failed_Test_InvalidUsername() {
         // Given
         Mockito.when(userRepository.findByUsername(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
@@ -107,6 +108,43 @@ class UserServiceTest {
             userService.update(updateDTO);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.NOT_FOUND_USER_FOR_UPDATE, exception.getMessage());
+        }
+    }
+
+    @DisplayName("닉네임 중복 체크 성공 테스트 - 닉네임이 중복되지 않음")
+    @Test
+    void checkNickName_Success_Test() {
+        // Given
+        Mockito.when(userRepository.findByNickName(ArgumentMatchers.anyString()))
+                .thenReturn(Optional.empty());
+
+        UserRequest.CheckNickNameDTO checkNickNameDTO = new UserRequest.CheckNickNameDTO("test");
+
+        // When
+        // Then
+        userService.checkNickName(checkNickNameDTO);
+    }
+
+    @DisplayName("닉네임 중복 체크 실패 테스트 - 닉네임이 중복됨")
+    @Test
+    void checkNickName_Failed_Test() {
+        // Given
+        User mockUser = User.builder().nickName("duplicateNickName").build();
+        Mockito.when(userRepository.findByNickName(ArgumentMatchers.anyString()))
+                .thenReturn(Optional.of(mockUser));
+
+        UserRequest.CheckNickNameDTO checkNickNameDTO
+                = new UserRequest.CheckNickNameDTO("duplicateNickName");
+
+        // When
+        // Then
+        Assertions.assertThrows(DuplicateNickNameException.class, () ->
+                userService.checkNickName(checkNickNameDTO));
+
+        try {
+            userService.checkNickName(checkNickNameDTO);
+        } catch (DuplicateNickNameException exception) {
+            Assertions.assertEquals(ErrorMessage.DUPLICATE_NICKNAME, exception.getMessage());
         }
     }
 }
