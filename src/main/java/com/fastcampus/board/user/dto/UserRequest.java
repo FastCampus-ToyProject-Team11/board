@@ -84,6 +84,7 @@ public class UserRequest {
     }
 
     @Getter
+    @AllArgsConstructor
     @ToString
     public static class CheckNickNameDTO {
 
@@ -93,6 +94,7 @@ public class UserRequest {
     }
 
     @Getter
+    @AllArgsConstructor
     @ToString
     public static class CheckUsernameDTO {
 
