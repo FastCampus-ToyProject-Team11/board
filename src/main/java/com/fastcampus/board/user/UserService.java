@@ -57,7 +57,7 @@ public class UserService {
         if (updateDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_FOR_USER_UPDATE);
 
         Optional<User> userOptional = userRepository.findByUsername(updateDTO.getUsername());
-        User user = userOptional.orElseThrow(() -> new Exception500(ErrorMessage.LOGIN_FAILED));
+        User user = userOptional.orElseThrow(() -> new Exception500(ErrorMessage.NOT_FOUND_USER_FOR_UPDATE));
 
         updateValidUserInfo(user, updateDTO);
     }
