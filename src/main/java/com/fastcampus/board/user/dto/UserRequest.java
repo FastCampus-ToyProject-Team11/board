@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 public class UserRequest {
 
@@ -57,5 +58,37 @@ public class UserRequest {
 
         @NotBlank
         private String password;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @ToString
+    public static class UpdateDTO {
+
+        @NotBlank
+        private String username;
+
+        @NotBlank
+        @Size(min = 4, max = 15)
+        private String password;
+
+        @NotBlank
+        @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+        private String email;
+
+        @NotBlank
+        @Size(min = 2, max = 15)
+        private String nickName;
+    }
+
+    @Getter
+    @ToString
+    public static class CheckNickNameDTO {
+
+        @NotBlank
+        @Size(min = 2, max = 15)
+        private String nickName;
     }
 }
