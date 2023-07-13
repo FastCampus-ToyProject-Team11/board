@@ -50,6 +50,7 @@ public class UserRequest {
 
     @Getter
     @ToString
+    @AllArgsConstructor
     public static class LoginDTO {
 
         @NotBlank
