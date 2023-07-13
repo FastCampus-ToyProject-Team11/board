@@ -2,6 +2,7 @@ package com.fastcampus.board.user;
 
 import com.fastcampus.board.__core.errors.ErrorMessage;
 import com.fastcampus.board.__core.errors.exception.DuplicateNickNameException;
+import com.fastcampus.board.__core.errors.exception.DuplicateUsernameException;
 import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.__core.security.JwtTokenProvider;
 import com.fastcampus.board.__core.security.PrincipalUserDetail;
@@ -81,5 +82,14 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByNickName(checkNickNameDTO.getNickName());
 
         userOptional.ifPresent(user -> {throw new DuplicateNickNameException();});
+    }
+
+    @Transactional(readOnly = true)
+    public void checkUsername(UserRequest.CheckUsernameDTO checkUsernameDTO) {
+        if (checkUsernameDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_USERNAME);
+
+        Optional<User> userOptional = userRepository.findByUsername(checkUsernameDTO.getUsername());
+
+        userOptional.ifPresent(user -> {throw new DuplicateUsernameException();});
     }
 }

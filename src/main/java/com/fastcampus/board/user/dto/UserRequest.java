@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Optional;
 
 public class UserRequest {
 
@@ -90,5 +89,14 @@ public class UserRequest {
         @NotBlank
         @Size(min = 2, max = 15)
         private String nickName;
+    }
+
+    @Getter
+    @ToString
+    public static class CheckUsernameDTO {
+
+        @NotBlank
+        @Size(min = 2, max = 15)
+        private String username;
     }
 }
