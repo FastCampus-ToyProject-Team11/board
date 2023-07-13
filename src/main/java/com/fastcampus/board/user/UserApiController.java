@@ -67,6 +67,16 @@ public class UserApiController {
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @PostMapping("/user/checkUsername")
+    public ResponseEntity<ApiResponse.Result<Object>> checkUserName(
+            @RequestBody @Valid UserRequest.CheckUsernameDTO checkUsernameDTO, Errors errors) {
+
+        log.info("/user/checkUserName POST " + checkUsernameDTO);
+        userService.checkUsername(checkUsernameDTO);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }
 
 
