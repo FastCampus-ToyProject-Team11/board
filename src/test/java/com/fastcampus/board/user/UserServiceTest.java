@@ -2,6 +2,7 @@ package com.fastcampus.board.user;
 
 import com.fastcampus.board.__core.errors.ErrorMessage;
 import com.fastcampus.board.__core.errors.exception.DuplicateNickNameException;
+import com.fastcampus.board.__core.errors.exception.DuplicateUsernameException;
 import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.user.dto.UserRequest;
 import com.fastcampus.board.user.dto.UserResponse;
@@ -145,6 +146,43 @@ class UserServiceTest {
             userService.checkNickName(checkNickNameDTO);
         } catch (DuplicateNickNameException exception) {
             Assertions.assertEquals(ErrorMessage.DUPLICATE_NICKNAME, exception.getMessage());
+        }
+    }
+
+    @DisplayName("유저네임 중복 체크 성공 테스트 - 유저네임이 중복되지 않음")
+    @Test
+    void checkUsername_Success_Test() {
+        // Given
+        Mockito.when(userRepository.findByUsername(ArgumentMatchers.anyString()))
+                .thenReturn(Optional.empty());
+
+        UserRequest.CheckUsernameDTO checkUsernameDTO = new UserRequest.CheckUsernameDTO("test");
+
+        // When
+        // Then
+        userService.checkUsername(checkUsernameDTO);
+    }
+
+    @DisplayName("유저네임 중복 체크 실패 테스트 - 유저네임이 중복됨")
+    @Test
+    void checkUsername_Failed_Test() {
+        // Given
+        User mockUser = User.builder().username("duplicateUsername").build();
+        Mockito.when(userRepository.findByUsername(ArgumentMatchers.anyString()))
+                .thenReturn(Optional.of(mockUser));
+
+        UserRequest.CheckUsernameDTO checkUsernameDTO
+                = new UserRequest.CheckUsernameDTO("duplicateUsername");
+
+        // When
+        // Then
+        Assertions.assertThrows(DuplicateUsernameException.class, () ->
+                userService.checkUsername(checkUsernameDTO));
+
+        try {
+            userService.checkUsername(checkUsernameDTO);
+        } catch (DuplicateUsernameException exception) {
+            Assertions.assertEquals(ErrorMessage.DUPLICATE_USERNAME, exception.getMessage());
         }
     }
 }
