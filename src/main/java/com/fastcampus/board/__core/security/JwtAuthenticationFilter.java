@@ -43,11 +43,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         try {
             DecodedJWT decodedJWT = JwtTokenProvider.verify(jwt);
 
+            String username = decodedJWT.getClaim("username").asString();
             Long id = decodedJWT.getClaim("id").asLong();
             String roleName = decodedJWT.getClaim("role").asString();
             Role role = Role.from(roleName);
 
-            User user = User.builder().id(id).role(role).build();
+            User user = User.builder().username(username).id(id).role(role).build();
 
             PrincipalUserDetail myUserDetails = new PrincipalUserDetail(user);
             Authentication authentication =
@@ -56,9 +57,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                             myUserDetails.getPassword(),
                             myUserDetails.getAuthorities()
                     );
+            PrincipalUserDetail userDetail = (PrincipalUserDetail) authentication.getPrincipal();
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("JWT created: authentication object is creation");
+            log.info("Security Context에 '{}' 인증 정보를 저장했습니다, Uri: '{}'", userDetail.getUsername(), request.getRequestURI());
+
             chain.doFilter(request, response);
 
         } catch (SignatureVerificationException sve) {

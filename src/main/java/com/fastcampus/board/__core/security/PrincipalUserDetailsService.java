@@ -1,5 +1,7 @@
 package com.fastcampus.board.__core.security;
 
+import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.user.User;
 import com.fastcampus.board.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ public class PrincipalUserDetailsService implements UserDetailsService {
         log.info("스프링 시큐리티 로그인 서비스 호출 username: " + username);
 
         Optional<User> userOptional = userRepository.findByUsername(username);
-        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user = userOptional.orElseThrow(() -> new Exception500(ErrorMessage.LOGIN_FAILED));
 
         return new PrincipalUserDetail(user);
     }
