@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,21 +22,21 @@ public class UserApiController {
 
     private final UserService userService;
 
-    @PostMapping("/join")
+    @PostMapping("/user/join")
     public ResponseEntity<ApiResponse.Result<UserResponse.JoinDTO>> join(
             @RequestBody @Valid UserRequest.JoinDTO joinDTO, Errors errors) {
 
-        log.info("/join POST " + joinDTO);
+        log.info("/user/join POST " + joinDTO);
 
         UserResponse.JoinDTO joinResponse = userService.save(joinDTO);
         return ResponseEntity.ok(ApiResponse.success(joinResponse));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseEntity<ApiResponse.Result<UserResponse.LoginDTO>> login(
             @RequestBody @Valid UserRequest.LoginDTO loginDTO, Errors errors) {
 
-        log.info("/login POST " + loginDTO);
+        log.info("/user/login POST " + loginDTO);
 
         UserResponse.LoginDTOWithJWT loginDTOWithJWT = userService.login(loginDTO);
 
@@ -45,6 +46,26 @@ public class UserApiController {
         return ResponseEntity.ok()
                 .header(JwtTokenProvider.HEADER, jwt)
                 .body(ApiResponse.success(loginResponse));
+    }
+
+    @PutMapping("/user/update")
+    public ResponseEntity<ApiResponse.Result<Object>> update(
+            @RequestBody @Valid UserRequest.UpdateDTO updateDTO, Errors errors) {
+
+        log.info("/user/update PUT " + updateDTO);
+        userService.update(updateDTO);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/user/checkNickName")
+    public ResponseEntity<ApiResponse.Result<Object>> checkNickName(
+            @RequestBody @Valid UserRequest.CheckNickNameDTO checkNickNameDTO, Errors errors) {
+
+        log.info("/user/checkNickName POST " + checkNickNameDTO);
+        userService.checkNickName(checkNickNameDTO);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
 
