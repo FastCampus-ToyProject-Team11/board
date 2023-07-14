@@ -31,13 +31,6 @@ public class UserIntegrationTest {
 
     @BeforeEach
     void setUp() {
-
-    }
-
-    @DisplayName("회원 가입 통합 테스트 - 성공")
-    @Test
-    void join_Success_Test() {
-        // Given
         UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
                 .username("testUser")
                 .password("1234")
@@ -45,12 +38,26 @@ public class UserIntegrationTest {
                 .nickName("testUser")
                 .build();
 
+        userService.save(joinDTO);
+    }
+
+    @DisplayName("회원 가입 통합 테스트 - 성공")
+    @Test
+    void join_Success_Test() {
+        // Given
+        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
+                .username("joinTest")
+                .password("1234")
+                .email("join@test.com")
+                .nickName("joinTest")
+                .build();
+
         // When
         UserResponse.JoinDTO actual = userService.save(joinDTO);
 
         // Then
-        Assertions.assertEquals("testUser", actual.getUsername());
-        Assertions.assertEquals("testUser", actual.getNickName());
+        Assertions.assertEquals("joinTest", actual.getUsername());
+        Assertions.assertEquals("joinTest", actual.getNickName());
     }
 
     @DisplayName("회원 가입 통합 테스트 - 실패(비어 있는 DTO)")
@@ -73,14 +80,6 @@ public class UserIntegrationTest {
     @Test
     void login_Success_Test() {
         // Given
-        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
-                .username("testUser")
-                .password("1234")
-                .email("test@test.com")
-                .nickName("testUser")
-                .build();
-        userService.save(joinDTO);
-
         UserRequest.LoginDTO loginDTO = new UserRequest.LoginDTO("testUser", "1234");
 
         // When
@@ -104,14 +103,6 @@ public class UserIntegrationTest {
     @Test
     void login_Failed_Test_InvalidUsernameOrPassword() {
         // Given
-        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
-                .username("testUser")
-                .password("1234")
-                .email("test@test.com")
-                .nickName("testUser")
-                .build();
-        userService.save(joinDTO);
-
         UserRequest.LoginDTO loginDTO =
                 new UserRequest.LoginDTO("InvalidUsername", "1234");
 
@@ -145,14 +136,6 @@ public class UserIntegrationTest {
     @Test
     void update_Success_Test() {
         // Given
-        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
-                .username("testUser")
-                .password("1234")
-                .email("test@test.com")
-                .nickName("testUser")
-                .build();
-        userService.save(joinDTO);
-
         UserRequest.UpdateDTO updateDTO = UserRequest.UpdateDTO.builder()
                 .username("testUser")
                 .password("12345")
@@ -175,14 +158,6 @@ public class UserIntegrationTest {
     @Test
     void update_Failed_Test_InvalidUsername() {
         // Given
-        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
-                .username("testUser")
-                .password("1234")
-                .email("test@test.com")
-                .nickName("testUser")
-                .build();
-        userService.save(joinDTO);
-
         UserRequest.UpdateDTO updateDTO = UserRequest.UpdateDTO.builder()
                 .username("invalidUsername")
                 .build();
