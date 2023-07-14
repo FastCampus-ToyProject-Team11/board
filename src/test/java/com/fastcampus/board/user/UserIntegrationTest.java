@@ -2,6 +2,7 @@ package com.fastcampus.board.user;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.DuplicateUsernameException;
 import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.__core.security.JwtTokenProvider;
 import com.fastcampus.board.user.dto.UserRequest;
@@ -70,7 +71,7 @@ public class UserIntegrationTest {
         // Then
         Assertions.assertThrows(Exception500.class, () -> userService.save(joinDTO));
         try {
-            userService.save(null);
+            userService.save(joinDTO);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_JOIN, exception.getMessage());
         }
@@ -80,7 +81,8 @@ public class UserIntegrationTest {
     @Test
     void login_Success_Test() {
         // Given
-        UserRequest.LoginDTO loginDTO = new UserRequest.LoginDTO("testUser", "1234");
+        UserRequest.LoginDTO loginDTO =
+                new UserRequest.LoginDTO("testUser", "1234");
 
         // When
         UserResponse.LoginDTOWithJWT response = userService.login(loginDTO);
@@ -108,7 +110,8 @@ public class UserIntegrationTest {
 
         // When
         // Then
-        Assertions.assertThrows(InternalAuthenticationServiceException.class, () -> userService.login(loginDTO));
+        Assertions.assertThrows(InternalAuthenticationServiceException.class,
+                () -> userService.login(loginDTO));
         try {
             userService.login(loginDTO);
         } catch (InternalAuthenticationServiceException exception) {
@@ -126,7 +129,7 @@ public class UserIntegrationTest {
         // Then
         Assertions.assertThrows(Exception500.class, () -> userService.login(loginDTO));
         try {
-            userService.login(null);
+            userService.login(loginDTO);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_LOGIN, exception.getMessage());
         }
@@ -181,9 +184,55 @@ public class UserIntegrationTest {
         // Then
         Assertions.assertThrows(Exception500.class, () -> userService.update(updateDTO));
         try {
-            userService.update(null);
+            userService.update(updateDTO);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_UPDATE, exception.getMessage());
+        }
+    }
+
+    @DisplayName("유저네임 중복 체크 통합 테스트 - 성공(유저네임이 중복되지 않음)")
+    @Test
+    void checkUsername_Success_Test() {
+        // Given
+        UserRequest.CheckUsernameDTO checkUsernameDTO
+                = new UserRequest.CheckUsernameDTO("checkUsername");
+
+        // When
+        // Then
+        userService.checkUsername(checkUsernameDTO);
+    }
+
+    @DisplayName("유저네임 중복 체크 통합 테스트 - 실패(유저네임이 중복됨)")
+    @Test
+    void checkUsername_Failed_Test_DuplicateUsername() {
+        // Given
+        UserRequest.CheckUsernameDTO checkUsernameDTO
+                = new UserRequest.CheckUsernameDTO("testUser");
+
+        // When
+        // Then
+        Assertions.assertThrows(DuplicateUsernameException.class,
+                () -> userService.checkUsername(checkUsernameDTO));
+        try {
+            userService.checkUsername(checkUsernameDTO);
+        } catch (DuplicateUsernameException exception) {
+            Assertions.assertEquals(ErrorMessage.DUPLICATE_USERNAME, exception.getMessage());
+        }
+    }
+
+    @DisplayName("유저네임 중복 체크 통합 테스트 - 실패(비어 있는 DTO)")
+    @Test
+    void checkUsername_Failed_Test_EmptyDTO() {
+        // Given
+        UserRequest.CheckUsernameDTO checkUsernameDTO = null;
+
+        // When
+        // Then
+        Assertions.assertThrows(Exception500.class, () -> userService.checkUsername(checkUsernameDTO));
+        try {
+            userService.checkUsername(checkUsernameDTO);
+        } catch (Exception500 exception) {
+            Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_USERNAME, exception.getMessage());
         }
     }
 }
