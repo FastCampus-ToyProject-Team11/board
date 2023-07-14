@@ -1,6 +1,5 @@
 package com.fastcampus.board.user;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus.board.__core.errors.ErrorMessage;
 import com.fastcampus.board.__core.errors.exception.DuplicateNickNameException;
 import com.fastcampus.board.__core.errors.exception.DuplicateUsernameException;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -177,6 +175,7 @@ public class UserIntegrationTest {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_USERNAME, exception.getMessage());
         }
     }
+
     @DisplayName("닉네임 중복 체크 통합 테스트 - 성공(닉네임이 중복되지 않음)")
     @Test
     void checkNickName_Success_Test() {

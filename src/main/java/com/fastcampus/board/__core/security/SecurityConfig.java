@@ -4,14 +4,12 @@ import com.fastcampus.board.__core.errors.ErrorMessage;
 import com.fastcampus.board.__core.errors.exception.Exception401;
 import com.fastcampus.board.__core.errors.exception.Exception403;
 import com.fastcampus.board.__core.util.FilterResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,10 +40,10 @@ public class SecurityConfig {
                 .and().cors().configurationSource(configurationSource()) // cors setting
 
                 .and().formLogin()
-                    .loginPage("/loginForm")
-                    .loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/")
-                    .permitAll()
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
 
                 .and().httpBasic().disable()
 
@@ -59,10 +57,10 @@ public class SecurityConfig {
 
                 .and().authorizeRequests(expressionInterceptUrlRegistry ->
                         expressionInterceptUrlRegistry
-                        .antMatchers("/auth/**").authenticated()
-                        .antMatchers("/excellent/**").access("hasRole('EXELLENT')")
-                        .antMatchers("/sesac/**").access("hasRole('SESAC')")
-                        .anyRequest().permitAll());
+                                .antMatchers("/auth/**").authenticated()
+                                .antMatchers("/excellent/**").access("hasRole('EXELLENT')")
+                                .antMatchers("/sesac/**").access("hasRole('SESAC')")
+                                .anyRequest().permitAll());
 
         return http.build();
     }
@@ -85,8 +83,8 @@ public class SecurityConfig {
 
         @Override
         public void configure(HttpSecurity builder) throws Exception {
-                AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-                builder.addFilter(new PrincipalUsernamePasswordAuthenticationFilter(authenticationManager));
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            builder.addFilter(new PrincipalUsernamePasswordAuthenticationFilter(authenticationManager));
             super.configure(builder);
         }
     }
