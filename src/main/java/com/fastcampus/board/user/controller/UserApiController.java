@@ -1,7 +1,7 @@
-package com.fastcampus.board.user;
+package com.fastcampus.board.user.controller;
 
-import com.fastcampus.board.__core.security.JwtTokenProvider;
 import com.fastcampus.board.__core.util.ApiResponse;
+import com.fastcampus.board.user.UserService;
 import com.fastcampus.board.user.dto.UserRequest;
 import com.fastcampus.board.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,22 +30,6 @@ public class UserApiController {
 
         UserResponse.JoinDTO joinResponse = userService.save(joinDTO);
         return ResponseEntity.ok(ApiResponse.success(joinResponse));
-    }
-
-    @PostMapping("/user/login")
-    public ResponseEntity<ApiResponse.Result<UserResponse.LoginDTO>> login(
-            @RequestBody @Valid UserRequest.LoginDTO loginDTO, Errors errors) {
-
-        log.info("/user/login POST " + loginDTO);
-
-        UserResponse.LoginDTOWithJWT loginDTOWithJWT = userService.login(loginDTO);
-
-        String jwt = loginDTOWithJWT.getJwt();
-        UserResponse.LoginDTO loginResponse = loginDTOWithJWT.getLoginDTO();
-
-        return ResponseEntity.ok()
-                .header(JwtTokenProvider.HEADER, jwt)
-                .body(ApiResponse.success(loginResponse));
     }
 
     @PutMapping("/user/update")
