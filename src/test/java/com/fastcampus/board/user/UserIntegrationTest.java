@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -22,8 +23,15 @@ public class UserIntegrationTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void setUp() {
+
     }
 
     @DisplayName("회원 가입 통합 테스트 - 성공")
@@ -53,7 +61,7 @@ public class UserIntegrationTest {
 
         // When
         // Then
-        Assertions.assertThrows(Exception500.class, () -> userService.save(null));
+        Assertions.assertThrows(Exception500.class, () -> userService.save(joinDTO));
         try {
             userService.save(null);
         } catch (Exception500 exception) {
@@ -125,11 +133,82 @@ public class UserIntegrationTest {
 
         // When
         // Then
-        Assertions.assertThrows(Exception500.class, () -> userService.login(null));
+        Assertions.assertThrows(Exception500.class, () -> userService.login(loginDTO));
         try {
             userService.login(null);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_LOGIN, exception.getMessage());
+        }
+    }
+
+    @DisplayName("회원 정보 수정 통합 테스트 - 성공")
+    @Test
+    void update_Success_Test() {
+        // Given
+        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
+                .username("testUser")
+                .password("1234")
+                .email("test@test.com")
+                .nickName("testUser")
+                .build();
+        userService.save(joinDTO);
+
+        UserRequest.UpdateDTO updateDTO = UserRequest.UpdateDTO.builder()
+                .username("testUser")
+                .password("12345")
+                .email("change@change.com")
+                .nickName("changeName")
+                .build();
+
+        // When
+        userService.update(updateDTO);
+        User actual = userRepository.findByUsername("testUser").get();
+
+        // Then
+        Assertions.assertEquals("testUser", actual.getUsername());
+        Assertions.assertTrue(passwordEncoder.matches("12345", actual.getPassword()));
+        Assertions.assertEquals("change@change.com", actual.getEmail());
+        Assertions.assertEquals("changeName", actual.getNickName());
+    }
+
+    @DisplayName("회원 정보 수정 통합 테스트 - 실패(잘못된 유저네임)")
+    @Test
+    void update_Failed_Test_InvalidUsername() {
+        // Given
+        UserRequest.JoinDTO joinDTO = UserRequest.JoinDTO.builder()
+                .username("testUser")
+                .password("1234")
+                .email("test@test.com")
+                .nickName("testUser")
+                .build();
+        userService.save(joinDTO);
+
+        UserRequest.UpdateDTO updateDTO = UserRequest.UpdateDTO.builder()
+                .username("invalidUsername")
+                .build();
+        // When
+        // Then
+        Assertions.assertThrows(Exception500.class, () -> userService.update(updateDTO));
+        try {
+            userService.update(updateDTO);
+        } catch (Exception500 exception) {
+            Assertions.assertEquals(ErrorMessage.NOT_FOUND_USER_FOR_UPDATE, exception.getMessage());
+        }
+    }
+
+    @DisplayName("회원 정보 수정 통합 테스트 - 실패(비어 있는 DTO)")
+    @Test
+    void update_Failed_Test_EmptyDTO() {
+        // Given
+        UserRequest.UpdateDTO updateDTO = null;
+
+        // When
+        // Then
+        Assertions.assertThrows(Exception500.class, () -> userService.update(updateDTO));
+        try {
+            userService.update(null);
+        } catch (Exception500 exception) {
+            Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_UPDATE, exception.getMessage());
         }
     }
 }
