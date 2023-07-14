@@ -23,34 +23,4 @@ public class UserResponse {
                     .build();
         }
     }
-
-    @Getter
-    @Builder
-    public static class LoginDTOWithJWT {
-
-        private LoginDTO loginDTO;
-        private String jwt;
-
-        public static LoginDTOWithJWT from(LoginDTO loginDTO, String jwt) {
-            return LoginDTOWithJWT.builder()
-                    .loginDTO(loginDTO)
-                    .jwt(jwt)
-                    .build();
-        }
-    }
-
-    @Getter
-    @Builder
-    public static class LoginDTO {
-
-        private String username;
-        private String nickName;
-
-        public static LoginDTO from(User user) {
-            return LoginDTO.builder()
-                    .username(user.getUsername())
-                    .nickName(user.getNickName())
-                    .build();
-        }
-    }
 }
