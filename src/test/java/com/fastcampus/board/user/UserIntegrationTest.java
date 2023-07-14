@@ -2,6 +2,7 @@ package com.fastcampus.board.user;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.DuplicateNickNameException;
 import com.fastcampus.board.__core.errors.exception.DuplicateUsernameException;
 import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.__core.security.JwtTokenProvider;
@@ -233,6 +234,51 @@ public class UserIntegrationTest {
             userService.checkUsername(checkUsernameDTO);
         } catch (Exception500 exception) {
             Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_USERNAME, exception.getMessage());
+        }
+    }
+    @DisplayName("닉네임 중복 체크 통합 테스트 - 성공(닉네임이 중복되지 않음)")
+    @Test
+    void checkNickName_Success_Test() {
+        // Given
+        UserRequest.CheckNickNameDTO checkNickNameDTO
+                = new UserRequest.CheckNickNameDTO("checkNickName");
+
+        // When
+        // Then
+        userService.checkNickName(checkNickNameDTO);
+    }
+
+    @DisplayName("닉네임 중복 체크 통합 테스트 - 실패(닉네임이 중복됨)")
+    @Test
+    void checkNickName_Failed_Test_DuplicateNickName() {
+        // Given
+        UserRequest.CheckNickNameDTO checkNickNameDTO
+                = new UserRequest.CheckNickNameDTO("testUser");
+
+        // When
+        // Then
+        Assertions.assertThrows(DuplicateNickNameException.class,
+                () -> userService.checkNickName(checkNickNameDTO));
+        try {
+            userService.checkNickName(checkNickNameDTO);
+        } catch (DuplicateNickNameException exception) {
+            Assertions.assertEquals(ErrorMessage.DUPLICATE_NICKNAME, exception.getMessage());
+        }
+    }
+
+    @DisplayName("닉네임 중복 체크 통합 테스트 - 실패(비어 있는 DTO)")
+    @Test
+    void checkNickName_Failed_Test_EmptyDTO() {
+        // Given
+        UserRequest.CheckNickNameDTO checkNickNameDTO = null;
+
+        // When
+        // Then
+        Assertions.assertThrows(Exception500.class, () -> userService.checkNickName(checkNickNameDTO));
+        try {
+            userService.checkNickName(checkNickNameDTO);
+        } catch (Exception500 exception) {
+            Assertions.assertEquals(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_NICKNAME, exception.getMessage());
         }
     }
 }
