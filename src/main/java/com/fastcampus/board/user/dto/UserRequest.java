@@ -50,6 +50,7 @@ public class UserRequest {
 
     @Getter
     @ToString
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginDTO {
 
@@ -85,6 +86,7 @@ public class UserRequest {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     @ToString
     public static class CheckNickNameDTO {
 
@@ -95,6 +97,7 @@ public class UserRequest {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     @ToString
     public static class CheckUsernameDTO {
 
