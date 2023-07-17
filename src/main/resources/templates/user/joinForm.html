@@ -12,7 +12,7 @@
 <div class="container">
 
     <div class="mb-3 mt-3">
-        <label for="username" class="form-label">Username:</label>
+        <label for="username" class="form-label"><strong>Username:</strong></label>
         <div style="display: flex">
             <input type="text" class="form-control" id="username" placeholder="Enter uesrname" name="username" required>
             <button id="btn-checkUsername" class="btn btn-primary" style="width: 12rem"> 중복 체크</button>
@@ -20,17 +20,17 @@
     </div>
 
     <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
+        <label for="password" class="form-label"><strong>Password:</strong></label>
         <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
     </div>
 
     <div class="mb-3 mt-3">
-        <label for="email" class="form-label">Email:</label>
+        <label for="email" class="form-label"><strong>Email:</strong></label>
         <input type="text" class="form-control" id="email" placeholder="Enter email" name="email" required>
     </div>
 
     <div class="mb-3 mt-3">
-        <label for="nickName" class="form-label">NickName:</label>
+        <label for="nickName" class="form-label"><strong>NickName:</strong></label>
         <div style="display: flex">
             <input type="text" class="form-control" id="nickName" placeholder="Enter nickName" name="nickName" required>
             <button id="btn-checkNickName" class="btn btn-primary" style="width: 12rem"> 중복 체크</button>
@@ -106,6 +106,10 @@
                 if (response.success === true) {
                     window.alert("사용 가능한 " + fieldId + " 입니다.")
                     this.duplicateChecks[fieldId] = true;
+
+                    $("#" + fieldId).on("change", () => {
+                        this.duplicateChecks[fieldId] = false;
+                    })
                 }
             }).fail(function (error) {
                 window.alert(JSON.parse(error.responseText).error.message);
@@ -130,7 +134,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/user/join",
+                url: "/join",
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
