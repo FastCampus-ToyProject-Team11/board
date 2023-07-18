@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -118,5 +119,19 @@ public class BoardService {
         Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
 
         return boardDTOS;
+    }
+
+    public BoardResponse.DetailDTO findById(Long id) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+
+        if (optionalBoard.isEmpty()) {
+            return null;
+        }
+
+        Board boardPS = optionalBoard.get();
+        BoardResponse.DetailDTO detailDTO = BoardResponse.DetailDTO.toDTO(boardPS);
+
+        return detailDTO;
     }
 }
