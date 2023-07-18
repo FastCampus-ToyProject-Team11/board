@@ -29,7 +29,6 @@ public class BoardController {
         String contentWithoutHTML = saveDTO.getContent().replaceAll("<[^>]*>", "");
         saveDTO.setContent(contentWithoutHTML);
 
-        // 뷰로부터 넘어온 값과 dto의 필드와 일치하는 값을 setter를 호출해서 넣어줌
         Long id = boardService.save(saveDTO);
         return "redirect:/board/" + id;
 
