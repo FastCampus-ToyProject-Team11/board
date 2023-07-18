@@ -134,4 +134,20 @@ public class BoardService {
 
         return detailDTO;
     }
+
+    @Transactional
+    public void update(BoardRequest.UpdateDTO updateDTO) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(updateDTO.getId());
+
+        if (optionalBoard.isPresent()) {
+
+            Board boardPS = optionalBoard.get();
+            boardPS.setTitle(updateDTO.getTitle());
+            boardPS.setContent(updateDTO.getContent());
+
+            boardRepository.save(boardPS);
+        }
+    }
+
 }
