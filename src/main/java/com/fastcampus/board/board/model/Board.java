@@ -48,7 +48,7 @@ public class Board {
     private Timestamp updatedAt;
 
     @Column
-    private int fileAttached;   // 파일 첨부 여부
+    private int fileAttached;
 
     @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
