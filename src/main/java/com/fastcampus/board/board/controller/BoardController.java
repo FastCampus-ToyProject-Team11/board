@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -47,7 +48,7 @@ public class BoardController {
         Page<BoardResponse.ListDTO> boardList = boardService.findAll(keyword, pageable);
 
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 
         model.addAttribute("boardList", boardList);
@@ -64,7 +65,7 @@ public class BoardController {
         Page<BoardResponse.ListDTO> boardList = boardService.findAllByCategory(role, keyword, pageable);
 
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 
         model.addAttribute("boardList", boardList);
@@ -91,6 +92,23 @@ public class BoardController {
         model.addAttribute("page", pageable.getPageNumber());
 
         return "board/detail";
+    }
+
+    @GetMapping("/update/{id}")
+    public String updateForm(@PathVariable Long id, Model model) {
+
+        BoardResponse.DetailDTO boardDetailDTO = boardService.findById(id);
+        model.addAttribute("boardUpdate", boardDetailDTO);
+
+        return "board/update";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute @Valid BoardRequest.UpdateDTO dto) {
+
+        boardService.update(dto);
+
+        return "redirect:/board/" + dto.getId();
     }
 
 }
