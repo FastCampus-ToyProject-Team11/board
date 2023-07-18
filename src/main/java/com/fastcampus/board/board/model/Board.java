@@ -10,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,4 +47,10 @@ public class Board {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    @Column
+    private int fileAttached;   // 파일 첨부 여부
+
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardFile> boardFileList = new ArrayList<>();
 }
