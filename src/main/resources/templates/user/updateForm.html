@@ -1,0 +1,111 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- --------------------- config --------------------- -->
+    <th:block th:replace="/fragments/config :: configFragment"></th:block>
+</head>
+<body>
+<!-- --------------------- header --------------------- -->
+<div th:replace="/fragments/header :: headerFragment"></div>
+
+
+<div class="container">
+
+    <div class="mb-3 mt-3">
+        <label for="username" class="form-label"><strong>Username:</strong></label>
+        <input type="text" class="form-control" id="username" th:value="${user.getUsername()}" name="username"
+               readonly>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label"><strong>Password:</strong></label>
+        <input type="text" class="form-control" id="password" placeholder="변경할 비밀번호를 입력하세요 아무것도 입력하지 않을 시 변경되지 않습니다."
+               name="password">
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label"><strong>Email:</strong></label>
+        <input type="text" class="form-control" id="email" th:value="${user.getEmail()}" name="email">
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="nickName" class="form-label"><strong>NickName:</strong></label>
+        <input type="text" class="form-control" id="nickName" th:value="${user.getNickName()}" name="nickName">
+    </div>
+    <button id="btn-user-update" class="btn btn-primary" disabled>회원 정보 수정</button>
+</div>
+
+<script>
+    const originalPassword = "";
+    const originalNickname = $("#nickName").val();
+    const originalEmail = $("#email").val();
+
+    function checkAllFields() {
+        const passwordChanged = ($("#password").val() !== originalPassword)
+        const nicknameChanged = ($("#nickName").val() !== originalNickname);
+        const emailChanged = ($("#email").val() !== originalEmail);
+
+        if (passwordChanged || nicknameChanged || emailChanged) {
+            $("#btn-user-update").prop("disabled", false);
+        } else {
+            $("#btn-user-update").prop("disabled", true);
+        }
+    }
+
+    let index = {
+        init: function () {
+            $("#password, #nickName, #email").on("keyup", function () {
+                checkAllFields();
+            });
+
+            $("#btn-user-update").on("click", () => {
+                this.userUpdate();
+            });
+        },
+
+        userUpdate: function () {
+            let data = {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                email: $("#email").val(),
+                nickName: $("#nickName").val()
+            }
+
+            if (data.password === originalPassword) {
+                data.password = "";
+            }
+
+            if (data.email === originalEmail) {
+                data.email = "";
+            }
+
+            if (data.nickName === originalNickname) {
+                data.nickName = "";
+            }
+
+            $.ajax({
+                type: "PUT",
+                url: "/user/update",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+            }).done((response) => {
+                console.log(response);
+                if (response.success === true) {
+                    window.alert("회원 정보 수정 성공, 다시 로그인 해주세요.")
+                    location.href = "/logout";
+                }
+
+            }).fail(function (error) {
+                window.alert(JSON.parse(error.responseText).error.message);
+            });
+        }
+    }
+    index.init();
+</script>
+
+<!-- --------------------- footer --------------------- -->
+<div th:replace="/fragments/footer :: footerFragment"></div>
+</body>
+</html>
