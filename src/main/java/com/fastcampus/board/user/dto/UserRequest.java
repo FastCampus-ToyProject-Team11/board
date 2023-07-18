@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -71,16 +72,13 @@ public class UserRequest {
         @NotBlank
         private String username;
 
-        @NotBlank
-        @Size(min = 4, max = 15)
+        @NotNull
         private String password;
 
-        @NotBlank
-        @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+        @NotNull
         private String email;
 
-        @NotBlank
-        @Size(min = 2, max = 15)
+        @NotNull
         private String nickName;
     }
 
@@ -104,5 +102,16 @@ public class UserRequest {
         @NotBlank
         @Size(min = 2, max = 15)
         private String username;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    public static class CheckEmailDTO {
+
+        @NotBlank
+        @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+        private String email;
     }
 }
