@@ -1,4 +1,4 @@
-package com.fastcampus.board.board;
+package com.fastcampus.board.board.model;
 
 import com.fastcampus.board.user.User;
 import lombok.AllArgsConstructor;
@@ -25,11 +25,17 @@ public class Board {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false)
-    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Lob
+    private String thumbnail;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -38,4 +44,5 @@ public class Board {
 
     @UpdateTimestamp
     private Timestamp updatedAt;
+
 }
