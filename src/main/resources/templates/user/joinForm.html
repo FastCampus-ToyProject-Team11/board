@@ -1,0 +1,161 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- --------------------- config --------------------- -->
+    <th:block th:replace="/fragments/config :: configFragment"></th:block>
+</head>
+<body>
+<!-- --------------------- header --------------------- -->
+<div th:replace="/fragments/header :: headerFragment"></div>
+
+
+<div class="container">
+
+    <div class="mb-3 mt-3">
+        <label for="username" class="form-label"><strong>Username:</strong></label>
+        <div style="display: flex">
+            <input type="text" class="form-control" id="username" placeholder="Enter uesrname" name="username" required>
+            <button id="btn-checkUsername" class="btn btn-primary" style="width: 12rem"> 중복 체크</button>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label"><strong>Password:</strong></label>
+        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="email" class="form-label"><strong>Email:</strong></label>
+        <input type="text" class="form-control" id="email" placeholder="Enter email" name="email" required>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="nickName" class="form-label"><strong>NickName:</strong></label>
+        <div style="display: flex">
+            <input type="text" class="form-control" id="nickName" placeholder="Enter nickName" name="nickName" required>
+            <button id="btn-checkNickName" class="btn btn-primary" style="width: 12rem"> 중복 체크</button>
+        </div>
+    </div>
+
+    <button id="btn-join" class="btn btn-primary">회원 가입</button>
+</div>
+
+<script>
+    let index = {
+        duplicateChecks: {
+            username: false,
+            nickName: false
+        },
+        totalChecks: 2,
+
+        init: function () {
+            $("#btn-join").on("click", () => {
+                if (this.validateForm()) {
+                    if (this.isAllChecksCompleted()){
+                        this.join();
+                    } else {
+                        if (this.isAllChecksInCompleted()) {
+                            alert("유저네임과 닉네임 중복체크를 완료해주세요");
+                        }else if (this.duplicateChecks.username === false) {
+                            alert("유저네임 중복체크를 완료해주세요");
+                        } else if (this.duplicateChecks.nickName === false) {
+                            alert("닉네임 중복체크를 완료해주세요");
+                        }
+                    }
+                }
+            });
+
+            $(".btn-primary").not("#btn-join").on("click", function() {
+                const fieldId = $(this).prev().attr("id");
+                index.checkDuplicate(fieldId);
+            });
+        },
+
+        validateForm: function () {
+            let requiredFields = $(".form-control[required]");
+            let isValid = true;
+            requiredFields.each(function () {
+                if ($(this).val().trim() === "") {
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            if (!isValid) {
+                window.alert("모든 값을 입력하세요.");
+            }
+            return isValid;
+        },
+
+        checkDuplicate: function (fieldId) {
+            const dataName = fieldId;
+            let data = {
+                [fieldId]: $("#" + fieldId).val()
+            }
+            const requestUrl = "/user/check" + fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
+
+            $.ajax({
+                type: "POST",
+                url: requestUrl,
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+            }).done((response) => {
+                console.log(response);
+                if (response.success === true) {
+                    window.alert("사용 가능한 " + fieldId + " 입니다.")
+                    this.duplicateChecks[fieldId] = true;
+
+                    $("#" + fieldId).on("change", () => {
+                        this.duplicateChecks[fieldId] = false;
+                    })
+                }
+            }).fail(function (error) {
+                window.alert(JSON.parse(error.responseText).error.message);
+            });
+        },
+
+        isAllChecksCompleted: function () {
+            return Object.values(this.duplicateChecks).every(check => check === true);
+        },
+
+        isAllChecksInCompleted: function () {
+            return Object.values(this.duplicateChecks).every(check => check === false);
+        },
+
+        join: function () {
+            let data = {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                email: $("#email").val(),
+                nickName: $("#nickName").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/join",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+            }).done((response) => {
+                console.log(response);
+                if (response.success === true) {
+                    window.alert("회원 가입 성공")
+                    location.href = "/loginForm";
+                }
+
+            }).fail(function (error) {
+                window.alert(JSON.parse(error.responseText).error.message);
+            });
+        }
+    }
+    index.init();
+</script>
+
+
+<!-- --------------------- footer --------------------- -->
+<div th:replace="/fragments/footer :: footerFragment"></div>
+</body>
+</html>

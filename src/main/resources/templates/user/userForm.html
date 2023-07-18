@@ -1,0 +1,47 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- --------------------- config --------------------- -->
+    <th:block th:replace="/fragments/config :: configFragment"></th:block>
+</head>
+<body>
+<!-- --------------------- header --------------------- -->
+<div th:replace="/fragments/header :: headerFragment"></div>
+
+
+<div class="container">
+
+    <div class="mb-3 mt-3">
+        <label for="username" class="form-label"><strong>Username:</strong></label>
+        <input type="text" class="form-control" id="username" th:value="${user.getUsername()}" name="username"
+               readonly>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="nickName" class="form-label"><strong>NickName:</strong></label>
+        <input type="text" class="form-control" id="nickName" th:value="${user.getNickName()}" name="nickName" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label"><strong>Email:</strong></label>
+        <input type="text" class="form-control" id="email" th:value="${user.getEmail()}" name="email" readonly>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="role" class="form-label"><strong>권한:</strong></label>
+        <input type="text" class="form-control" id="role" th:value="${user.getRole()}" name="role" readonly>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label for="createdAt" class="form-label"><strong>생성일자:</strong></label>
+        <input type="text" class="form-control" id="createdAt" th:value="${user.getCreatedAt()}" name="createdAt" readonly>
+    </div>
+
+
+    <button onclick="location.href='/user/updateForm'" id="btn-userInfo-update" class="btn btn-primary">회원 정보 수정</button>
+</div>
+
+<!-- --------------------- footer --------------------- -->
+<div th:replace="/fragments/footer :: footerFragment"></div>
+</body>
+</html>

@@ -31,9 +31,9 @@ public class BoardService {
     public Long save(BoardRequest.saveDTO dto) throws IOException {
 
         Long saveId;
-        // 파일 첨부 여부에 따라 로직 분리
+
         if (dto.getThumbnail().isEmpty()) {
-            // 첨부 파일 없음
+
             Board board = Board.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
@@ -43,7 +43,7 @@ public class BoardService {
             saveId = boardRepository.save(board).getId();
 
         } else {
-            // 첨부 파일 있음
+
             MultipartFile thumbnail = dto.getThumbnail();
 
             String originalFilename = thumbnail.getOriginalFilename();
@@ -58,27 +58,27 @@ public class BoardService {
                     .fileAttached(1)
                     .build();
 
-            saveId = boardRepository.save(board).getId();  // board_tb에 save (board_id)
+            saveId = boardRepository.save(board).getId(); 
 
             Board boardPS = boardRepository.findById(saveId).get();
             BoardFile boardFile = BoardFile.toBoardFile(boardPS, originalFilename, storedFileName);
 
-            boardFileRepository.save(boardFile);    // board_file_tb에 save
+            boardFileRepository.save(boardFile);   
         }
         return saveId;
     }
 
     public String getSavePath(String storedFileName) {
 
-        String homeDir = System.getProperty("user.home");   // 사용자 홈 디렉토리
+        String homeDir = System.getProperty("user.home");  
         String saveFolderName = "board-stored-img";
 
-        File saveFolder = new File(homeDir + File.separator + saveFolderName);  // C/user/사용자/폴더명 (폴더까지의 경로)
+        File saveFolder = new File(homeDir + File.separator + saveFolderName); 
         if (!saveFolder.exists()) {
             saveFolder.mkdir();
         }
 
-        return saveFolder + File.separator + storedFileName; //  // C/user/사용자/폴더명/파일명 (파일까지의 경로)
+        return saveFolder + File.separator + storedFileName; 
     }
 
     public Page<BoardResponse.ListDTO> findAll(String keyword, Pageable pageable) {
@@ -93,7 +93,6 @@ public class BoardService {
             boardEntities = boardRepository.findAll(setPageable);
         } else {
             boardEntities = boardRepository.findAllByKeyword(keyword, setPageable);
-
         }
         Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
 
@@ -107,12 +106,9 @@ public class BoardService {
         Pageable setPageable = PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"));
         Page<Board> boardEntities = null;
 
-
         if (keyword == null || keyword.isBlank()) {
-            // 검색데이터가 없으면 해당 권한의 모든 게시글 목록 불러오기
             boardEntities = boardRepository.findAllByCategory(role, setPageable);
         } else {
-            // 해당 권한의 게시글을 검색해서 불러오기
             boardEntities = boardRepository.findAllByKeywordCategory(role, keyword, setPageable);
         }
 

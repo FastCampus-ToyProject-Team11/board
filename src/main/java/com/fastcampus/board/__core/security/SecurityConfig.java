@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -31,6 +32,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new PrincipalAuthenticationFailureHandler();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
@@ -43,6 +49,7 @@ public class SecurityConfig {
                 .loginPage("/loginForm")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/")
+                .failureHandler(authenticationFailureHandler())
                 .permitAll()
 
                 .and().httpBasic().disable()
@@ -57,7 +64,7 @@ public class SecurityConfig {
 
                 .and().authorizeRequests(expressionInterceptUrlRegistry ->
                         expressionInterceptUrlRegistry
-                                .antMatchers("/auth/**").authenticated()
+                                .antMatchers("/user/update").authenticated()
                                 .antMatchers("/excellent/**").access("hasRole('EXELLENT')")
                                 .antMatchers("/sesac/**").access("hasRole('SESAC')")
                                 .anyRequest().permitAll());

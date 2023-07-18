@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+
 @RequiredArgsConstructor
 @RequestMapping("/board")
 @Controller
@@ -26,7 +27,9 @@ public class BoardController {
 
     @GetMapping("/save")
     public String saveForm(){
+
         return "board/save";
+      
     }
 
     @PostMapping("/save")
@@ -40,7 +43,6 @@ public class BoardController {
 
     }
 
-    // /board/list?page=1
     @GetMapping("/list")
     public String boardList(@PageableDefault(page=1) Pageable pageable, Model model,
                             @RequestParam(value = "keyword", required = false) String keyword) {
@@ -48,7 +50,7 @@ public class BoardController {
         Page<BoardResponse.ListDTO> boardList = boardService.findAll(keyword, pageable);
 
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; 
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 
         model.addAttribute("boardList", boardList);
@@ -65,7 +67,7 @@ public class BoardController {
         Page<BoardResponse.ListDTO> boardList = boardService.findAllByCategory(role, keyword, pageable);
 
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; 
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 
         model.addAttribute("boardList", boardList);
@@ -83,4 +85,5 @@ public class BoardController {
         String savePath = boardService.getSavePath(storedFileName);
         return new UrlResource("file:" + savePath);
     }
+
 }

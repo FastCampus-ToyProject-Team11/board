@@ -1,0 +1,65 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- --------------------- config --------------------- -->
+    <th:block th:replace="/fragments/config :: configFragment"></th:block>
+</head>
+<body>
+<!-- --------------------- header --------------------- -->
+<div th:replace="/fragments/header :: headerFragment"></div>
+
+
+<div class="container">
+
+<!--    <form action="/login" method="post">-->
+        <div class="mb-3 mt-3">
+            <label for="username" class="form-label"><strong>UserName:</strong></label>
+            <input type="text" class="form-control" id="username" placeholder="Enter uesrname" name="username" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label"><strong>Password:</strong></label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+        </div>
+
+        <button id="btn-login" class="btn btn-primary">로그인</button>
+</div>
+
+<script>
+    let index = {
+        init: function () {
+            $("#btn-login").on("click", () => {
+                this.login();
+            })
+        },
+
+        login: function () {
+            let data = {
+                username:$("#username").val(),
+                password:$("#password").val()
+            }
+            let serializedData = $.param(data);
+
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: serializedData,
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+
+            }).done(function (response) {
+                alert("로그인 성공");
+                location.href = "/";
+
+            }).fail(function (xhr) {
+                const response = JSON.parse(xhr.responseText);
+                alert(response.error);
+            });
+        }
+    }
+    index.init();
+</script>
+
+<!-- --------------------- footer --------------------- -->
+<div th:replace="/fragments/footer :: footerFragment"></div>
+</body>
+</html>

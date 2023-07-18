@@ -22,7 +22,7 @@ public class UserApiController {
 
     private final UserService userService;
 
-    @PostMapping("/user/join")
+    @PostMapping("/join")
     public ResponseEntity<ApiResponse.Result<UserResponse.JoinDTO>> join(
             @RequestBody @Valid UserRequest.JoinDTO joinDTO, Errors errors) {
 
@@ -58,6 +58,16 @@ public class UserApiController {
 
         log.info("/user/checkUserName POST " + checkUsernameDTO);
         userService.checkUsername(checkUsernameDTO);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/user/checkEmail")
+    public ResponseEntity<ApiResponse.Result<Object>> checkEmail(
+            @RequestBody @Valid UserRequest.CheckEmailDTO checkEmailDTO, Errors errors) {
+
+        log.info("/user/checkEmail POST " + checkEmailDTO);
+        userService.checkEmail(checkEmailDTO);
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }
