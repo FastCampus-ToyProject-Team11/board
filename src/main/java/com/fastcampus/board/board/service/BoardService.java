@@ -1,11 +1,17 @@
 package com.fastcampus.board.board.service;
 
 import com.fastcampus.board.board.dto.BoardRequest;
+import com.fastcampus.board.board.dto.BoardResponse;
 import com.fastcampus.board.board.model.Board;
 import com.fastcampus.board.board.model.BoardFile;
+import com.fastcampus.board.board.model.Role;
 import com.fastcampus.board.board.repository.BoardFileRepository;
 import com.fastcampus.board.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,5 +79,45 @@ public class BoardService {
         }
 
         return saveFolder + File.separator + storedFileName; //  // C/user/사용자/폴더명/파일명 (파일까지의 경로)
+    }
+
+    public Page<BoardResponse.ListDTO> findAll(String keyword, Pageable pageable) {
+
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 3;
+
+        Pageable setPageable = PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Board> boardEntities = null;
+
+        if (keyword == null || keyword.isBlank()) {
+            boardEntities = boardRepository.findAll(setPageable);
+        } else {
+            boardEntities = boardRepository.findAllByKeyword(keyword, setPageable);
+
+        }
+        Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
+
+        return boardDTOS;
+    }
+
+    public Page<BoardResponse.ListDTO> findAllByCategory(Role role, String keyword, Pageable pageable) {
+
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 3;
+        Pageable setPageable = PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Board> boardEntities = null;
+
+
+        if (keyword == null || keyword.isBlank()) {
+            // 검색데이터가 없으면 해당 권한의 모든 게시글 목록 불러오기
+            boardEntities = boardRepository.findAllByCategory(role, setPageable);
+        } else {
+            // 해당 권한의 게시글을 검색해서 불러오기
+            boardEntities = boardRepository.findAllByKeywordCategory(role, keyword, setPageable);
+        }
+
+        Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
+
+        return boardDTOS;
     }
 }
