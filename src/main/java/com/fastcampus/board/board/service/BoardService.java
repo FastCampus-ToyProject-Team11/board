@@ -84,7 +84,7 @@ public class BoardService {
     public Page<BoardResponse.ListDTO> findAll(String keyword, Pageable pageable) {
 
         int page = pageable.getPageNumber() - 1;
-        int pageLimit = 3;
+        int pageLimit = 6;
 
         Pageable setPageable = PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"));
         Page<Board> boardEntities = null;
@@ -103,7 +103,7 @@ public class BoardService {
     public Page<BoardResponse.ListDTO> findAllByCategory(Role role, String keyword, Pageable pageable) {
 
         int page = pageable.getPageNumber() - 1;
-        int pageLimit = 3;
+        int pageLimit = 6;
         Pageable setPageable = PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"));
         Page<Board> boardEntities = null;
 
