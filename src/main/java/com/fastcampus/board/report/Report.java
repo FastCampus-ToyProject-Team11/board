@@ -1,6 +1,6 @@
 package com.fastcampus.board.report;
 
-import com.fastcampus.board.board.Board;
+import com.fastcampus.board.board.model.Board;
 import com.fastcampus.board.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
