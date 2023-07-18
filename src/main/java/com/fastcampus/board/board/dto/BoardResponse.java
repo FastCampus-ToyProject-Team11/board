@@ -39,4 +39,24 @@ public class BoardResponse {
             return listDTO;
         }
     }
+    @ToString
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class DetailDTO {
+        private Long id;
+        private String title;
+        private String content;
+//        private String nickname;
+        // comment 리스트 (id, comment, 댓글작성자의 nickname)
+
+        public static DetailDTO toDTO(Board board) {
+            return DetailDTO.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+//                    .nickname(board.getUser().getNickName())
+                    .build();
+        }
+    }
 }
