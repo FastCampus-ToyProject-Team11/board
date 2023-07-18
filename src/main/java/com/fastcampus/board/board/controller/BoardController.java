@@ -82,4 +82,15 @@ public class BoardController {
         return new UrlResource("file:" + savePath);
     }
 
+    @GetMapping("/{id}")
+    public String findById(@PathVariable Long id, Model model, @PageableDefault(page=1) Pageable pageable) {
+
+        BoardResponse.DetailDTO boardDetailDTO = boardService.findById(id);
+
+        model.addAttribute("board", boardDetailDTO);
+        model.addAttribute("page", pageable.getPageNumber());
+
+        return "board/detail";
+    }
+
 }
