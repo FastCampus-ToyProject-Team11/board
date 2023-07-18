@@ -37,17 +37,33 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUsername(updateDTO.getUsername());
         User user = userOptional.orElseThrow(() -> new Exception500(ErrorMessage.NOT_FOUND_USER_FOR_UPDATE));
 
+        validateUpdateUserInfo(updateDTO);
         updateValidUserInfo(user, updateDTO);
     }
 
+    private void validateUpdateUserInfo(UserRequest.UpdateDTO updateDTO) {
+        String password = updateDTO.getPassword();
+        if (!password.equals("") && (password.length() < 4 || password.length() > 15))
+            throw new Exception500(ErrorMessage.INVALID_PASSWORD);
+
+        String nickName = updateDTO.getNickName();
+        if (!nickName.equals("") && (nickName.length() < 2 || nickName.length() > 15))
+            throw new Exception500(ErrorMessage.INVALID_NICKNAME);
+
+        String regex = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+        String email = updateDTO.getEmail();
+        if (!email.equals("") && !email.matches(regex))
+            throw new Exception500(ErrorMessage.INVALID_EMAIL);
+    }
+
     private void updateValidUserInfo(User user, UserRequest.UpdateDTO updateDTO) {
-        if (updateDTO.getEmail() != null) {
+        if (!updateDTO.getEmail().equals("")) {
             user.setEmail(updateDTO.getEmail());
         }
-        if (updateDTO.getNickName() != null) {
+        if (!updateDTO.getNickName().equals("")) {
             user.setNickName(updateDTO.getNickName());
         }
-        if (updateDTO.getPassword() != null) {
+        if (!updateDTO.getPassword().equals("")) {
             String encodedPassword = passwordEncoder.encode(updateDTO.getPassword());
             user.setPassword(encodedPassword);
         }
@@ -69,6 +85,17 @@ public class UserService {
         if (checkUsernameDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_USERNAME);
 
         Optional<User> userOptional = userRepository.findByUsername(checkUsernameDTO.getUsername());
+
+        userOptional.ifPresent(user -> {
+            throw new DuplicateUsernameException();
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public void checkEmail(UserRequest.CheckEmailDTO checkEmailDTO) {
+        if (checkEmailDTO == null) throw new Exception500(ErrorMessage.EMPTY_DATA_FOR_USER_CHECK_EMAIL);
+
+        Optional<User> userOptional = userRepository.findByEmail(checkEmailDTO.getEmail());
 
         userOptional.ifPresent(user -> {
             throw new DuplicateUsernameException();

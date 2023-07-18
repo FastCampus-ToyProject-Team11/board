@@ -34,4 +34,10 @@ public class UserController {
         model.addAttribute("user", userDetail.getUser());
         return "/user/userForm";
     }
+
+    @GetMapping("/user/updateForm")
+    public String userUpdateForm(@AuthenticationPrincipal PrincipalUserDetail userDetail, Model model) {
+        model.addAttribute("user", userDetail.getUser());
+        return "/user/updateForm";
+    }
 }
