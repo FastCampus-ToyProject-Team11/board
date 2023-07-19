@@ -48,7 +48,7 @@
 
             }).done(function (response) {
                 alert("로그인 성공");
-                location.href = "/";
+                location.href = "/board/list";
 
             }).fail(function (xhr) {
                 const response = JSON.parse(xhr.responseText);
