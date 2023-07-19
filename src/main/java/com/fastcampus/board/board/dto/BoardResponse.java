@@ -1,9 +1,12 @@
 package com.fastcampus.board.board.dto;
 
 import com.fastcampus.board.board.model.Board;
-import com.fastcampus.board.board.model.Role;
+import com.fastcampus.board.user.Role;
+import com.fastcampus.board.user.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.sql.Timestamp;
 
 public class BoardResponse {
 
@@ -43,15 +46,16 @@ public class BoardResponse {
         private Long id;
         private String title;
         private String content;
-//        private String nickname;
-        // comment 리스트 (id, comment, 댓글작성자의 nickname)
+        private Timestamp createdAt;
+        private User user;
 
-        public static DetailDTO toDTO(Board board) {
+        public static DetailDTO from(Board board) {
             return DetailDTO.builder()
                     .id(board.getId())
                     .title(board.getTitle())
                     .content(board.getContent())
-//                    .nickname(board.getUser().getNickName())
+                    .user(board.getUser())
+                    .createdAt(board.getCreatedAt())
                     .build();
         }
     }

@@ -5,6 +5,7 @@ import com.fastcampus.board.__core.errors.exception.Exception500;
 import java.util.Objects;
 
 public enum Role {
+
     SESAC,
     EXCELLENT;
 

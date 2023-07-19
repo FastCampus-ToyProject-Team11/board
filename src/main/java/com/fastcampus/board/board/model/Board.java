@@ -1,5 +1,6 @@
 package com.fastcampus.board.board.model;
 
+import com.fastcampus.board.user.Role;
 import com.fastcampus.board.user.User;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
