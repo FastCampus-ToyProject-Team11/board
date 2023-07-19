@@ -14,6 +14,9 @@ public class ErrorMessage {
     public static final String EMPTY_DATA_FOR_USER_CHECK_NICKNAME = "닉네임 중복 검사를 위한 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_FOR_USER_CHECK_USERNAME = "유저네임 중복 검사를 위한 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_FOR_USER_CHECK_EMAIL = "이메일 중복 검사를 위한 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_FOR_SAVE_COMMENT = "댓글 등록을 위한 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_USER_FOR_SAVE_COMMENT = "댓글 동록을 위한 회원 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_BOARD_FOR_SAVE_COMMENT = "댓글 등록을 위한 게시글 데이터가 존재하지 않습니다.";
 
     public static final String INVALID_PASSWORD = "패스워드는 4자에서 15자 사이어야 합니다.";
     public static final String INVALID_NICKNAME = "닉네임은 2자에서 15자 사이어야 합니다.";
