@@ -64,7 +64,7 @@ public class SecurityConfig {
 
                 .and().authorizeRequests(expressionInterceptUrlRegistry ->
                         expressionInterceptUrlRegistry
-                                .antMatchers("/user/update").authenticated()
+                                .antMatchers("/user/update", "/board/save").authenticated()
                                 .antMatchers("/excellent/**").access("hasRole('EXELLENT')")
                                 .antMatchers("/sesac/**").access("hasRole('SESAC')")
                                 .anyRequest().permitAll());
