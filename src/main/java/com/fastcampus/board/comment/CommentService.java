@@ -36,4 +36,9 @@ public class CommentService {
     public List<Comment> findAllByBoardId(Long boardId) {
         return commentRepository.findAllByBoardId(boardId);
     }
+
+    @Transactional
+    public void delete(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
 }

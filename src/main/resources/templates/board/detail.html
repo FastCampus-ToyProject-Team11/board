@@ -24,7 +24,9 @@
 
     <hr>
 
-    <div class="content-box" th:utext="${board.content}"></div>
+    <div class="content-box">
+        <p th:utext="${board.content}"></p>
+    </div>
 
     <hr>
 
@@ -37,16 +39,7 @@
     <a href="#" class="btn btn-outline-danger btn-sm">신고하기</a>
     <a th:href="@{/board/list(page=${page})}" class="btn btn-outline-primary btn-sm" style="float: right">목록보기</a>
 
-    <div class="card" style="margin-bottom: 1rem; margin-top: 1rem">
-        <div class="card-body">
-            <textarea id="reply-content" class="form-control-plaintext" placeholder="댓글을 작성하세요." rows="1"></textarea>
-        </div>
-        <div class="card-footer">
-            <button type="button" id="btn-reply-save" class="btn btn-primary">등록</button>
-        </div>
-    </div>
-
-    <div class="card">
+    <div class="card" style="margin-top: 1rem">
         <div class="card-header bg-secondary">댓글 리스트</div>
         <div th:if="${comments.isEmpty()}" style="text-align: center; padding-top: 1rem; color: gray"><p>등록된 댓글이 존재하지 않습니다.</p></div>
 
@@ -56,25 +49,50 @@
                     <div th:text="${comment.content}">댓글 내용</div>
                     <div class="d-flex">
                         <div th:text="${comment.user.username}" style="margin-right: .5rem; font: italic 15px Arial">작성자: username</div>
-                        <button th:replyId="${comment.id}" th:onclick="replyDelete(this.getAttribute('replyId'))"
-                                id="btn-reply-delete" th:if="${comment.user.username.equals(#authentication.name)}" class="badge bg-danger">삭제</button>
+                        <button th:replyId="${comment.id}" th:onclick="commentDelete([[${comment.id}]])"
+                                id="btn-comment-delete" th:if="${comment.user.username.equals(#authentication.name)}" class="badge bg-danger">삭제</button>
                     </div>
                 </li>
             </div>
         </ul>
     </div>
+
+    <div class="card" style="margin-bottom: 1rem; margin-top: 1rem">
+        <div class="card-body">
+            <textarea id="reply-content" class="form-control-plaintext" placeholder="댓글을 작성하세요." rows="1"></textarea>
+        </div>
+        <div class="card-footer">
+            <button type="button" id="btn-comment-save" class="btn btn-primary">등록</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
     let boardId = [[ ${board.id} ]];
+
+    function commentDelete(commentId) {
+        $.ajax({
+            type: "DELETE",
+            url: `/board/comment/${commentId}`,
+            dataType: "json",
+
+        }).done(function (response) {
+            alert("댓글 삭제가 완료 되었습니다.");
+            location.href = ("/board/" + boardId);
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    }
+
     let index = {
         init: function () {
-            $("#btn-reply-save").on("click", () => {
-                this.replySave();
+            $("#btn-comment-save").on("click", () => {
+                this.commentSave();
             })
         },
 
-        replySave: function () {
+        commentSave: function () {
             let data = {
                 boardId: boardId,
                 content: $("#reply-content").val()
@@ -101,6 +119,5 @@
 </script>
 
 <!-- --------------------- footer --------------------- -->
-<div th:replace="/fragments/footer :: footerFragment"></div>
 </body>
 </html>
