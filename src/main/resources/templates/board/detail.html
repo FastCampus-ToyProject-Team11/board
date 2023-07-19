@@ -45,6 +45,24 @@
             <button type="button" id="btn-reply-save" class="btn btn-primary">등록</button>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-header bg-secondary">댓글 리스트</div>
+        <div th:if="${comments.isEmpty()}" style="text-align: center; padding-top: 1rem; color: gray"><p>등록된 댓글이 존재하지 않습니다.</p></div>
+
+        <ul th:unless=" ${comments.isEmpty()} == 0" id="reply--box" class="list-group">
+            <div th:each="comment : ${comments}">
+                <li class="list-group-item d-flex justify-content-between" >
+                    <div th:text="${comment.content}">댓글 내용</div>
+                    <div class="d-flex">
+                        <div th:text="${comment.user.username}" style="margin-right: .5rem; font: italic 15px Arial">작성자: username</div>
+                        <button th:replyId="${comment.id}" th:onclick="replyDelete(this.getAttribute('replyId'))"
+                                id="btn-reply-delete" th:if="${comment.user.username.equals(#authentication.name)}" class="badge bg-danger">삭제</button>
+                    </div>
+                </li>
+            </div>
+        </ul>
+    </div>
 </div>
 
 <script>

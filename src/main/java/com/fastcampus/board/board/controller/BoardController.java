@@ -4,6 +4,8 @@ import com.fastcampus.board.board.dto.BoardRequest;
 import com.fastcampus.board.board.dto.BoardResponse;
 import com.fastcampus.board.board.model.Role;
 import com.fastcampus.board.board.service.BoardService;
+import com.fastcampus.board.comment.Comment;
+import com.fastcampus.board.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/board")
@@ -24,6 +27,7 @@ import java.net.MalformedURLException;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm(){
@@ -87,9 +91,11 @@ public class BoardController {
     public String findById(@PathVariable Long id, Model model, @PageableDefault(page=1) Pageable pageable) {
 
         BoardResponse.DetailDTO boardDetailDTO = boardService.findById(id);
+        List<Comment> comments = commentService.findAllByBoardId(id);
 
         model.addAttribute("board", boardDetailDTO);
         model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("comments", comments);
 
         return "board/detail";
     }
