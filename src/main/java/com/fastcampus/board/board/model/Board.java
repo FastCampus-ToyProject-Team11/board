@@ -1,15 +1,12 @@
 package com.fastcampus.board.board.model;
 
 import com.fastcampus.board.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +27,7 @@ public class Board {
     private String content;
 
     @Lob
-    private String thumbnail;
+    private String thumbnailName;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
@@ -46,11 +43,4 @@ public class Board {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    @Column
-    private int fileAttached;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"board"})
-    private List<BoardFile> boardFileList = new ArrayList<>();
 }

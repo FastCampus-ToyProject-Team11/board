@@ -3,9 +3,7 @@ package com.fastcampus.board.board.service;
 import com.fastcampus.board.board.dto.BoardRequest;
 import com.fastcampus.board.board.dto.BoardResponse;
 import com.fastcampus.board.board.model.Board;
-import com.fastcampus.board.board.model.BoardFile;
 import com.fastcampus.board.board.model.Role;
-import com.fastcampus.board.board.repository.BoardFileRepository;
 import com.fastcampus.board.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,46 +24,26 @@ import java.util.UUID;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final BoardFileRepository boardFileRepository;
 
     @Transactional
-    public Long save(BoardRequest.saveDTO dto) throws IOException {
+    public Long save(BoardRequest.saveDTO dto, MultipartFile thumbnail) throws IOException {
 
-        Long saveId;
+        String originalFilename = thumbnail.getOriginalFilename();
+        String storedFileName = UUID.randomUUID().toString() + "_" + originalFilename;
 
-        if (dto.getThumbnail().isEmpty()) {
-
-            Board board = Board.builder()
-                    .title(dto.getTitle())
-                    .content(dto.getContent())
-                    .fileAttached(0)
-                    .build();
-
-            saveId = boardRepository.save(board).getId();
-
-        } else {
-
-            MultipartFile thumbnail = dto.getThumbnail();
-
-            String originalFilename = thumbnail.getOriginalFilename();
-            String storedFileName = UUID.randomUUID().toString() + "_" + originalFilename;
+        if (!thumbnail.isEmpty()) {
             String savePath = getSavePath(storedFileName);
-
             thumbnail.transferTo(new File(savePath));
-
-            Board board = Board.builder()
-                    .title(dto.getTitle())
-                    .content(dto.getContent())
-                    .fileAttached(1)
-                    .build();
-
-            saveId = boardRepository.save(board).getId();
-
-            Board boardPS = boardRepository.findById(saveId).get();
-            BoardFile boardFile = BoardFile.toBoardFile(boardPS, originalFilename, storedFileName);
-
-            boardFileRepository.save(boardFile);
         }
+
+        Board board = Board.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .thumbnailName(storedFileName)
+                .build();
+
+        Long saveId = boardRepository.save(board).getId();
+
         return saveId;
     }
 
