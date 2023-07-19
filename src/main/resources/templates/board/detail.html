@@ -10,16 +10,14 @@
 <div th:replace="/fragments/header :: headerFragment"></div>
 <div class="container">
 
-    <div class="p-5 text-center">
-        <h2> 게시글 상세보기</h2>
-    </div>
+    <h1 id="title" th:text="${board.title}" style="background: lightgray; margin-top: 2rem">게시글 제목</h1>
 
-    <div class="title-box">
+    <hr>
 
-        <div class="title-items">
-            <h1 id="title" th:text="${board.title}"></h1>
-        </div>
-
+    <div class="mb-3 mt-3" style="margin-bottom: 1rem; margin-top: 2rem">
+        <p style="margin-bottom: 0">게시글 번호: <span th:text="${board.id}"></span></p>
+        <p style="margin-bottom: 0">작성자: <span th:text="${board.user.username}"></span></p>
+        <p>작성일: <span th:text="${board.createdAt}"></span></p>
     </div>
 
     <hr>
@@ -28,15 +26,85 @@
         <p th:utext="${board.content}"></p>
     </div>
 
-    <hr>
-
-    <div th:text="${board.id}"></div>
-
     <br>
 
-    <a th:href="@{/board/update/{boardId}(boardId=${board.id})}" class="btn btn-outline-primary btn-sm">수정하기</a>
-    <a th:href="@{/board/delete/{boardId}(boardId=${board.id})}" class="btn btn-outline-primary btn-sm">삭제하기</a>
-    <a href="#" class="btn btn-outline-danger btn-sm">신고하기</a>
+    <a th:if="${#authentication != null and board.user.username.equals(#authentication.name)}"
+       th:href="@{/board/update/{boardId}(boardId=${board.id})}" class="btn btn-outline-primary btn-sm">수정하기</a>
+    <a th:if="${#authentication != null and board.user.username.equals(#authentication.name)}"
+       th:href="@{/board/delete/{boardId}(boardId=${board.id})}" class="btn btn-outline-primary btn-sm">삭제하기</a>
+
+    <!--///////////////////////////////////    REPORT    ////////////////////////////-->
+    <button th:if="${#authentication != null and !board.user.username.equals(#authentication.name)}"
+            type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#myModal">신고하기</button>
+    <div class="modal fade" id="myModal"
+         style="position: fixed; top: 25%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">게시글 신고하기</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h5>왜 신고함?</h5>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio1" name="opt-radio" value="ABUSE" checked>욕설
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio2" name="opt-radio" value="LEWDNESS">음란
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio3" name="opt-radio" value="CALUMNY">비방
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" id="btn-report" class="btn btn-danger" data-bs-dismiss="modal">신고하기</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let boardId = [[ ${board.id} ]];
+        $(document).ready(function() {
+            $("#btn-report").click(function() {
+
+                let data = {
+                    boardId: boardId,
+                    reason: $("input[name='opt-radio']:checked").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: `/board/report/`,
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        alert("신고가 성공적으로 접수되었습니다.")
+                        console.log(response)
+                    },
+                    error: function(error) {
+                        const errorMessage = error.responseJSON && error.responseJSON.error && error.responseJSON.error.message;
+                        alert(errorMessage || "신고 요청을 보내는 중 오류가 발생했습니다.");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!--///////////////////////////////////    COMMENT    ////////////////////////////-->
     <a th:href="@{/board/list(page=${page})}" class="btn btn-outline-primary btn-sm" style="float: right">목록보기</a>
 
     <div class="card" style="margin-top: 1rem">
@@ -57,7 +125,7 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 1rem; margin-top: 1rem">
+    <div sec:authorize-expr="isAuthenticated()" class="card" style="margin-bottom: 1rem; margin-top: 1rem">
         <div class="card-body">
             <textarea id="reply-content" class="form-control-plaintext" placeholder="댓글을 작성하세요." rows="1"></textarea>
         </div>
@@ -69,8 +137,6 @@
 </div>
 
 <script>
-    let boardId = [[ ${board.id} ]];
-
     function commentDelete(commentId) {
         $.ajax({
             type: "DELETE",
