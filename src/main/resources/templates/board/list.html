@@ -26,11 +26,11 @@
     <br>
 
     <!--게시글이 없을 경우-->
-    <div th:if="${boardList == null}" class="text-center">
+    <div th:if="${boardList.isEmpty()}" class="text-center">
         <h6>등록된 게시글이 없습니다.</h6>
     </div>
 
-    <div th:unless="${boardList != null}" class="text-center">
+    <div th:unless="${boardList.isEmpty()}" class="text-center">
         <!--게시글 카드  -->
         <div class="row">
             <div th:each="board: ${boardList}" class="col-md-4 mb-4 ">
