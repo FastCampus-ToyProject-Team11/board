@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
-    <meta charset="UTF-8">
-    <title>detail</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- --------------------- config --------------------- -->
+    <th:block th:replace="/fragments/config :: configFragment"></th:block>
 </head>
-<body class="p-5">
+<body>
+<!-- --------------------- header --------------------- -->
+<div th:replace="/fragments/header :: headerFragment"></div>
 <div class="container">
 
     <div class="p-5 text-center">
@@ -36,7 +37,52 @@
     <a href="#" class="btn btn-outline-danger btn-sm">신고하기</a>
     <a th:href="@{/board/list(page=${page})}" class="btn btn-outline-primary btn-sm" style="float: right">목록보기</a>
 
+    <div class="card" style="margin-bottom: 1rem; margin-top: 1rem">
+        <div class="card-body">
+            <textarea id="reply-content" class="form-control-plaintext" placeholder="댓글을 작성하세요." rows="1"></textarea>
+        </div>
+        <div class="card-footer">
+            <button type="button" id="btn-reply-save" class="btn btn-primary">등록</button>
+        </div>
+    </div>
 </div>
-</body>
 
+<script>
+    let boardId = [[ ${board.id} ]];
+    let index = {
+        init: function () {
+            $("#btn-reply-save").on("click", () => {
+                this.replySave();
+            })
+        },
+
+        replySave: function () {
+            let data = {
+                boardId: boardId,
+                content: $("#reply-content").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: `/board/comment/`,
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+            }).done(function (response) {
+
+                alert("댓글 등록이 완료 되었습니다.");
+                location.href = ("/board/" + boardId);
+
+            }).fail(function (error) {
+                alert(JSON.stringify(error));
+            });
+        }
+    }
+    index.init();
+</script>
+
+<!-- --------------------- footer --------------------- -->
+<div th:replace="/fragments/footer :: footerFragment"></div>
+</body>
 </html>

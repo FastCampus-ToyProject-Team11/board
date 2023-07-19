@@ -26,11 +26,11 @@
     <br>
 
     <!--게시글이 없을 경우-->
-    <div th:if="${boardList.isEmpty()}" class="text-center">
+    <div th:if="${boardList == null or boardList.isEmpty()}" class="text-center">
         <h6>등록된 게시글이 없습니다.</h6>
     </div>
 
-    <div th:unless="${boardList.isEmpty()}" class="text-center">
+    <div th:unless="${boardList == null or boardList.isEmpty()}" class="text-center">
         <!--게시글 카드  -->
         <div class="row">
             <div th:each="board: ${boardList}" class="col-md-4 mb-4 ">
@@ -61,7 +61,7 @@
     </div>
 
     <!--페이지네이션-->
-    <div th:if="${boardList != null}">
+    <div th:if="${boardList != null and !boardList.isEmpty()}">
         <ul class="pagination pagination-sm justify-content-center" style="margin: 20px 0">
             <li class="page-item">
                 <a class="page-link" th:href="${boardList.totalPages == 0} ? '#' : @{/board/list(page=1)}">First</a>
