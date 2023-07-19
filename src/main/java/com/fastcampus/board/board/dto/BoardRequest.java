@@ -23,10 +23,8 @@ public class BoardRequest {
         @Size(max = 20000, message = "내용은 20,000자 이내로 작성해주세요.")
         private String content;
 
-        private MultipartFile thumbnail;
         private String originalFileName;
         private String storedFileName;
-        private int fileAttached;
 
     }
 
