@@ -1,6 +1,7 @@
 package com.fastcampus.board.board.model;
 
 import com.fastcampus.board.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,5 +51,6 @@ public class Board {
 
     @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"board"})
     private List<BoardFile> boardFileList = new ArrayList<>();
 }
