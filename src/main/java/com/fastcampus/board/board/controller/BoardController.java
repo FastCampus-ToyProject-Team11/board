@@ -1,17 +1,20 @@
 package com.fastcampus.board.board.controller;
 
+import com.fastcampus.board.__core.security.PrincipalUserDetail;
 import com.fastcampus.board.board.dto.BoardRequest;
 import com.fastcampus.board.board.dto.BoardResponse;
-import com.fastcampus.board.board.model.Role;
 import com.fastcampus.board.board.service.BoardService;
 import com.fastcampus.board.comment.Comment;
 import com.fastcampus.board.comment.CommentService;
+import com.fastcampus.board.user.Role;
+import com.fastcampus.board.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,15 +39,16 @@ public class BoardController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardRequest.saveDTO saveDTO,
+    public String save(@AuthenticationPrincipal PrincipalUserDetail userDetail,
+                       @ModelAttribute BoardRequest.saveDTO saveDTO,
                        @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
 
         String contentWithoutHTML = saveDTO.getContent().replaceAll("<[^>]*>", "");
         saveDTO.setContent(contentWithoutHTML);
 
-        Long id = boardService.save(saveDTO, thumbnail);
+        User user = userDetail.getUser();
+        Long id = boardService.save(saveDTO, thumbnail, user);
         return "redirect:/board/" + id;
-
     }
 
     @GetMapping("/list")
@@ -92,10 +96,10 @@ public class BoardController {
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model, @PageableDefault(page=1) Pageable pageable) {
 
-        BoardResponse.DetailDTO boardDetailDTO = boardService.findById(id);
+        BoardResponse.DetailDTO board = boardService.findById(id);
         List<Comment> comments = commentService.findAllByBoardId(id);
 
-        model.addAttribute("board", boardDetailDTO);
+        model.addAttribute("board", board);
         model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("comments", comments);
 

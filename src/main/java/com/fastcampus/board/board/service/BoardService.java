@@ -1,10 +1,13 @@
 package com.fastcampus.board.board.service;
 
+import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.Exception500;
 import com.fastcampus.board.board.dto.BoardRequest;
 import com.fastcampus.board.board.dto.BoardResponse;
 import com.fastcampus.board.board.model.Board;
-import com.fastcampus.board.board.model.Role;
 import com.fastcampus.board.board.repository.BoardRepository;
+import com.fastcampus.board.user.Role;
+import com.fastcampus.board.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +29,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long save(BoardRequest.saveDTO dto, MultipartFile thumbnail) throws IOException {
+    public Long save(BoardRequest.saveDTO dto, MultipartFile thumbnail, User user) throws IOException {
 
         String originalFilename = thumbnail.getOriginalFilename();
         String storedFileName = UUID.randomUUID().toString() + "_" + originalFilename;
@@ -40,11 +43,11 @@ public class BoardService {
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .thumbnailName(storedFileName)
+                .user(user)
+                .role(user.getRole())
                 .build();
 
-        Long saveId = boardRepository.save(board).getId();
-
-        return saveId;
+        return boardRepository.save(board).getId();
     }
 
     public String getSavePath(String storedFileName) {
@@ -99,18 +102,14 @@ public class BoardService {
         return boardDTOS;
     }
 
+    @Transactional(readOnly = true)
     public BoardResponse.DetailDTO findById(Long id) {
+        if (id == null) throw new Exception500(ErrorMessage.EMPTY_DATA_FOR_FIND_BOARD);
 
-        Optional<Board> optionalBoard = boardRepository.findById(id);
+        Optional<Board> boardOptional = boardRepository.findById(id);
+        Board board = boardOptional.orElseThrow(() -> new Exception500(ErrorMessage.NOT_FOUND_BOARD));
 
-        if (optionalBoard.isEmpty()) {
-            return null;
-        }
-
-        Board boardPS = optionalBoard.get();
-        BoardResponse.DetailDTO detailDTO = BoardResponse.DetailDTO.toDTO(boardPS);
-
-        return detailDTO;
+        return BoardResponse.DetailDTO.from(board);
     }
 
     @Transactional

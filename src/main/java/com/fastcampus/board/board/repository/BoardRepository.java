@@ -1,7 +1,7 @@
 package com.fastcampus.board.board.repository;
 
 import com.fastcampus.board.board.model.Board;
-import com.fastcampus.board.board.model.Role;
+import com.fastcampus.board.user.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
