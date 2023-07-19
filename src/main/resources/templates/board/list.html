@@ -80,7 +80,7 @@
             <span th:unless="${page == boardList.number + 1}">
                 <li class="page-item">
                     <a class="page-link" href="#"
-                       th:href="${boardList.totalPages == 0} ? '#' : @{/board/paging(page=${page})}" th:text="${page}"></a>
+                       th:href="${boardList.totalPages == 0} ? '#' : @{/board/list(page=${page})}" th:text="${page}"></a>
                 </li>
             </span>
         </span>
