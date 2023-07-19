@@ -35,10 +35,10 @@
         <div class="row">
             <div th:each="board: ${boardList}" class="col-md-4 mb-4 ">
                 <div class="card" style="width: 300px">
-                    <img class="card-img-top img-thumbnail" th:src="@{|/board/image/${board.storedFileName}|}"/>
+                    <img class="card-img-top img-thumbnail" th:src="@{|/board/image/${board.thumbnailName}|}"/>
                     <div class="card-body">
                         <h4 class="card-title" th:text="${board.title}"></h4>
-                        <p class="card-text" th:text="${board.content}"></p>
+                        <p class="card-text" th:utext="${board.content}"></p>
                         <p class="card-text" th:text="${board.id}"></p>
                         <a th:href="@{|/board/${board.id}|(page=${boardList.number + 1})}"
                            class="btn btn-outline-primary btn-sm">상세보기</a>

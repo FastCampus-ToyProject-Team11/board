@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -35,12 +36,13 @@ public class BoardController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardRequest.saveDTO saveDTO) throws IOException {
+    public String save(@ModelAttribute BoardRequest.saveDTO saveDTO,
+                       @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
 
         String contentWithoutHTML = saveDTO.getContent().replaceAll("<[^>]*>", "");
         saveDTO.setContent(contentWithoutHTML);
 
-        Long id = boardService.save(saveDTO);
+        Long id = boardService.save(saveDTO, thumbnail);
         return "redirect:/board/" + id;
 
     }

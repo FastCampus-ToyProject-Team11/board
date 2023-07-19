@@ -16,6 +16,7 @@ public class BoardResponse {
         private Long id;
         private String title;
         private String content;
+        private String thumbnailName;
         private String nickname;
         private Role role;
 
@@ -25,20 +26,15 @@ public class BoardResponse {
         private int fileAttached;
 
         public static ListDTO toListDTO(Board board) {
-
-            ListDTO listDTO = new ListDTO();
-            listDTO.setId(board.getId());
-            listDTO.setTitle(board.getTitle());
-            listDTO.setContent(board.getContent());
-            listDTO.setFileAttached(board.getFileAttached());
-
-            if (board.getFileAttached() == 1) {
-                listDTO.setOriginalFileName(board.getBoardFileList().get(0).getOriginalFileName());
-                listDTO.setStoredFileName(board.getBoardFileList().get(0).getStoredFileName());
-            }
-            return listDTO;
+            return ListDTO.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .thumbnailName(board.getThumbnailName())
+                    .build();
         }
     }
+
     @ToString
     @Getter
     @AllArgsConstructor
