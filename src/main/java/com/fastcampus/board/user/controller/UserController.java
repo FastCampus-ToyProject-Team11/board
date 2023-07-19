@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class UserController {
 
-    @GetMapping({"/index", "/"})
+    @GetMapping({"/"})
     public String index(@AuthenticationPrincipal PrincipalUserDetail userDetail) {
         log.info("/index GET userDetail:" + userDetail);
-        return "/index";
+        return "/board/list";
     }
 
     @GetMapping("/loginForm")
