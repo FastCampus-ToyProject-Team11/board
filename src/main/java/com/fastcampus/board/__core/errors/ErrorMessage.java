@@ -17,6 +17,8 @@ public class ErrorMessage {
     public static final String EMPTY_DATA_FOR_SAVE_COMMENT = "댓글 등록을 위한 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_USER_FOR_SAVE_COMMENT = "댓글 동록을 위한 회원 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_BOARD_FOR_SAVE_COMMENT = "댓글 등록을 위한 게시글 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_FOR_REPORT_SAVE = "신고 등록을 위한 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_FOR_FIND_BOARD = "게시글을 찾기 위한 데이터가 존재하지 않습니다.";
 
     public static final String INVALID_PASSWORD = "패스워드는 4자에서 15자 사이어야 합니다.";
     public static final String INVALID_NICKNAME = "닉네임은 2자에서 15자 사이어야 합니다.";
@@ -26,4 +28,7 @@ public class ErrorMessage {
     public static final String NOT_FOUND_USER_FOR_UPDATE = "회원 정보 수정을 위한 회원 정보가 존재하지 않습니다.";
     public static final String DUPLICATE_NICKNAME = "중복되는 닉네임 입니다.";
     public static final String DUPLICATE_USERNAME = "중복되는 유저네임 입니다.";
+
+    public static final String DUPLICATE_REPORT = "같은 게시글을 여러번 신고할 수 없습니다.";
+    public static final String NOT_FOUND_BOARD = "게시글 정보가 존재하지 않습니다.";
 }
