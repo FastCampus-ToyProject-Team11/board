@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -29,5 +30,10 @@ public class CommentService {
 
         Comment comment = saveDTO.toEntityWithUserAndBoard(user, board);
         return commentRepository.save(comment);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Comment> findAllByBoardId(Long boardId) {
+        return commentRepository.findAllByBoardId(boardId);
     }
 }
