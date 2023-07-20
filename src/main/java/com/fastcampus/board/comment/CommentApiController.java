@@ -28,7 +28,7 @@ public class CommentApiController {
         User user = userDetail.getUser();
         Comment comment = commentService.saveComment(saveDTO, user);
 
-        return ResponseEntity.ok(ApiResponse.success(comment));
+        return ResponseEntity.ok(ApiResponse.success(comment.getId()));
     }
 
     @DeleteMapping("/{commentId}")

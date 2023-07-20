@@ -44,4 +44,10 @@ public class Board {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    private Boolean hide;
+
+    @PrePersist
+    protected void onCreate() {
+        hide = false;
+    }
 }

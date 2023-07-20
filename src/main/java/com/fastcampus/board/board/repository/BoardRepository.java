@@ -13,13 +13,15 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%")
+    Page<Board> findAllByHideIsFalse(Pageable pageable);
+
+    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.hide = false AND (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%)")
     Page<Board> findAllByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.role = :role")
+    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.hide = false AND b.role = :role")
     Page<Board> findAllByRole(@Param("role") Role role, Pageable pageable);
 
-    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%) AND b.role = :role")
+    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.hide = false AND (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%) AND b.role = :role")
     Page<Board> findAllByKeywordRole(@Param("role") Role role, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT new com.fastcampus.board.board.dto.BoardResponse$UserSummary(b.user.id, b.user.role, COUNT(b)) " +
