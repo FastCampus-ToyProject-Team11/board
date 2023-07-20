@@ -21,12 +21,11 @@ public class BoardResponse {
         private String content;
         private String thumbnailName;
         private String nickname;
-        private Role role;
+        private User user;
 
         private MultipartFile thumbnail;
         private String originalFileName;
         private String storedFileName;
-        private int fileAttached;
 
         public static ListDTO toListDTO(Board board) {
             return ListDTO.builder()
@@ -34,6 +33,7 @@ public class BoardResponse {
                     .title(board.getTitle())
                     .content(board.getContent())
                     .thumbnailName(board.getThumbnailName())
+                    .user(board.getUser())
                     .build();
         }
     }

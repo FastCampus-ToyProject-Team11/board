@@ -10,14 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
 
-//    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickname LIKE %:keyword%)")
-    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword%)")
+    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%)")
     Page<Board> findAllByKeyword(String keyword, Pageable pageable);
 
     @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.role = :role")
     Page<Board> findAllByRole(Role role, Pageable pageable);
 
-//    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickname LIKE %:keyword%) AND b.role = :role")
-    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword%) AND b.role = :role")
+    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickName LIKE %:keyword%) AND b.role = :role")
     Page<Board> findAllByKeywordRole(Role role, String keyword, Pageable pageable);
 }
