@@ -15,9 +15,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findAllByKeyword(String keyword, Pageable pageable);
 
     @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE b.role = :role")
-    Page<Board> findAllByCategory(Role role, Pageable pageable);
+    Page<Board> findAllByRole(Role role, Pageable pageable);
 
 //    @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR u.nickname LIKE %:keyword%) AND b.role = :role")
     @Query("SELECT b FROM Board b LEFT JOIN b.user u WHERE (b.title LIKE %:keyword% OR b.content LIKE %:keyword%) AND b.role = :role")
-    Page<Board> findAllByKeywordCategory(Role role, String keyword, Pageable pageable);
+    Page<Board> findAllByKeywordRole(Role role, String keyword, Pageable pageable);
 }
