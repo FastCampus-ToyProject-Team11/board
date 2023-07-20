@@ -43,9 +43,6 @@ public class BoardController {
                        @ModelAttribute BoardRequest.saveDTO saveDTO,
                        @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
 
-        String contentWithoutHTML = saveDTO.getContent().replaceAll("<[^>]*>", "");
-        saveDTO.setContent(contentWithoutHTML);
-
         User user = userDetail.getUser();
         Long id = boardService.save(saveDTO, thumbnail, user);
         return "redirect:/board/" + id;
@@ -56,6 +53,11 @@ public class BoardController {
                             @RequestParam(value = "keyword", required = false) String keyword) {
 
         Page<BoardResponse.ListDTO> boardList = boardService.findAll(keyword, pageable);
+
+        for (BoardResponse.ListDTO dto : boardList) {
+            String contentWithoutHTML = dto.getContent().replaceAll("<[^>]*>", "");
+            dto.setContent(contentWithoutHTML);
+        }
 
         int blockLimit = 3;
         int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
@@ -72,7 +74,12 @@ public class BoardController {
     public String boardListByRole(@PageableDefault(page=1) Pageable pageable, Model model,
                                   @RequestParam(value = "keyword", required = false) String keyword, @RequestParam Role role) {
 
-        Page<BoardResponse.ListDTO> boardList = boardService.findAllByCategory(role, keyword, pageable);
+        Page<BoardResponse.ListDTO> boardList = boardService.findAllByRole(role, keyword, pageable);
+
+        for (BoardResponse.ListDTO dto : boardList) {
+            String contentWithoutHTML = dto.getContent().replaceAll("<[^>]*>", "");
+            dto.setContent(contentWithoutHTML);
+        }
 
         int blockLimit = 3;
         int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
