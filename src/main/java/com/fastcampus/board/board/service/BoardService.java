@@ -72,11 +72,12 @@ public class BoardService {
         Page<Board> boardEntities = null;
 
         if (keyword == null || keyword.isBlank()) {
-            boardEntities = boardRepository.findAll(setPageable);
+            boardEntities = boardRepository.findAllByHideIsFalse(setPageable);
         } else {
             boardEntities = boardRepository.findAllByKeyword(keyword, setPageable);
 
         }
+
         Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
 
         return boardDTOS;
