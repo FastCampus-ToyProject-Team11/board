@@ -27,7 +27,7 @@ public class SchedulerService {
     private final UserRepository userRepository;
 
     @Transactional
-    @Scheduled(fixedDelay = 1000 * 10)
+    @Scheduled(fixedDelay = 1000 * 60)
     public void run() {
         log.info("스케줄러 잘 동작해 : " + LocalDateTime.now());
 
