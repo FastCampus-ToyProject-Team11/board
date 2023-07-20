@@ -82,7 +82,7 @@ public class BoardService {
         return boardDTOS;
     }
 
-    public Page<BoardResponse.ListDTO> findAllByCategory(Role role, String keyword, Pageable pageable) {
+    public Page<BoardResponse.ListDTO> findAllByRole(Role role, String keyword, Pageable pageable) {
 
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 6;
@@ -92,9 +92,9 @@ public class BoardService {
 
 
         if (keyword == null || keyword.isBlank()) {
-            boardEntities = boardRepository.findAllByCategory(role, setPageable);
+            boardEntities = boardRepository.findAllByRole(role, setPageable);
         } else {
-            boardEntities = boardRepository.findAllByKeywordCategory(role, keyword, setPageable);
+            boardEntities = boardRepository.findAllByKeywordRole(role, keyword, setPageable);
         }
 
         Page<BoardResponse.ListDTO> boardDTOS = boardEntities.map(BoardResponse.ListDTO::toListDTO);
