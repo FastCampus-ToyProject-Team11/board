@@ -16,11 +16,27 @@
                     <li class="nav-item"><a class="nav-link" href="/board/save"><span class="glyphicon glyphicon-edit"></span> 글쓰기</a></li>
                     <li class="nav-item"><a class="nav-link" href="/user/userForm"><span class="glyphicon glyphicon-user"></span> 회원정보</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">게시판</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/board/list}">전체</a></li>
+                            <li><a class="dropdown-item" th:href="@{/board/list/SESAC}">새싹회원</a></li>
+                            <li><a class="dropdown-item" th:href="@{/board/list/EXCELLENT}">우수회원</a></li>
+                        </ul>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav me-auto" sec:authorize-expr="!isAuthenticated()">
                     <li class="nav-item"><a class="nav-link" href="/joinForm"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
                     <li class="nav-item"><a class="nav-link" href="/loginForm"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">게시판</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/board/list}">전체</a></li>
+                            <li><a class="dropdown-item" th:href="@{/board/list/SESAC}">새싹회원</a></li>
+                            <li><a class="dropdown-item" th:href="@{/board/list/EXCELLENT}">우수회원</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
 

@@ -71,8 +71,15 @@ public class BoardController {
     }
 
     @GetMapping("/list/{category}")
-    public String boardListByRole(@PageableDefault(page=1) Pageable pageable, Model model,
-                                  @RequestParam(value = "keyword", required = false) String keyword, @RequestParam Role role) {
+    public String boardListByRole(@PageableDefault(page=1) Pageable pageable, Model model, @PathVariable String category,
+                                  @RequestParam(value = "keyword", required = false) String keyword) {
+
+        Role role;
+        if (category.equals(Role.SESAC.name())) {
+            role = Role.SESAC;
+        } else {
+            role = Role.EXCELLENT;
+        }
 
         Page<BoardResponse.ListDTO> boardList = boardService.findAllByRole(role, keyword, pageable);
 
@@ -86,6 +93,7 @@ public class BoardController {
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 
         model.addAttribute("boardList", boardList);
+        model.addAttribute("category", category);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 

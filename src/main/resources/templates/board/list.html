@@ -12,13 +12,19 @@
 <div class="container">
 
     <div class="py-5 text-center">
-        <h2>게시글 목록</h2>
+        <h2>
+        <span th:switch="${category}">
+            <span th:case="null" th:text="'전체 게시판'"></span>
+            <span th:case="'SESAC'" th:text="'새싹 회원 게시판'"></span>
+            <span th:case="'EXCELLENT'" th:text="'우수 회원 게시판'"></span>
+        </span>
+        </h2>
     </div>
 
     <!--검색 창-->
     <form th:action="@{/board/list}" method="GET">
         <div style="display: flex;">
-            <input type="text" class="form-control" name="keyword" placeholder="검색어를 입력하세요.">
+            <input type="text" class="form-control" name="keyword" placeholder="검색어를 입력하세요. (제목 or 내용 or 작성자)">
             <button type="submit" class="btn btn-primary" style="width: 12rem">검색</button>
             <button type="submit" class="btn btn-secondary" style="width: 12rem;" onclick="clearKeyword()">전체보기</button>
         </div>
@@ -34,12 +40,16 @@
         <!--게시글 카드  -->
         <div class="row">
             <div th:each="board: ${boardList}" class="col-md-4 mb-4 ">
-                <div class="card" style="width: 300px">
+                <div class="card">
                     <img class="card-img-top img-thumbnail" th:src="@{|/board/image/${board.thumbnailName}|}"/>
                     <div class="card-body">
-                        <h4 class="card-title" th:text="${board.title}"></h4>
-                        <p class="card-text" th:utext="${board.content}"></p>
-                        <p class="card-text" th:text="${board.id}"></p>
+                        <p>
+                            no. <span th:text="${board.id}"></span><br>
+                            <span th:text="|[${board.user.role.name().equals('SESAC') ? '새싹 회원' : '우수 회원'} 게시판]|"></span>
+                        </p><br>
+                        <h4 th:text="${board.title}"></h4>
+                        <p class="card-text" th:utext="${board.content}"></p><br>
+                        <p>작성자: <span th:text="${board.user.nickName}"></span></p>
                         <a th:href="@{|/board/${board.id}|(page=${boardList.number + 1})}"
                            class="btn btn-outline-primary btn-sm">상세보기</a>
                     </div>
@@ -62,7 +72,7 @@
 
     <!--페이지네이션-->
     <div th:if="${boardList != null and !boardList.isEmpty()}">
-        <ul class="pagination pagination-sm justify-content-center" style="margin: 20px 0">
+        <ul class="pagination pagination justify-content-center" style="margin: 20px 0">
             <li class="page-item">
                 <a class="page-link" th:href="${boardList.totalPages == 0} ? '#' : @{/board/list(page=1)}">First</a>
             </li>
