@@ -6,6 +6,7 @@ public class ErrorMessage {
         throw new IllegalArgumentException("Suppress default constructor");
     }
 
+
     public static final String UN_AUTHORIZED = "인증되지 않았습니다.";
     public static final String FORBIDDEN = "권한이 없습니다.";
 
@@ -31,4 +32,5 @@ public class ErrorMessage {
 
     public static final String DUPLICATE_REPORT = "같은 게시글을 여러번 신고할 수 없습니다.";
     public static final String NOT_FOUND_BOARD = "게시글 정보가 존재하지 않습니다.";
+    public static final String NOT_FOUND_USER = "유저 정보가 존재하지 않습니다.";
 }
