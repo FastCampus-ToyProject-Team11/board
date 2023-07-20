@@ -59,4 +59,15 @@ public class BoardResponse {
                     .build();
         }
     }
+
+    @Getter
+    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UserSummary {
+        private Long userId;
+        private Role userRole;
+        private Long postCount;
+    }
 }
