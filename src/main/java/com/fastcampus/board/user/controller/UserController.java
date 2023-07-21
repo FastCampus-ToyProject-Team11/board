@@ -16,7 +16,7 @@ public class UserController {
     @GetMapping({"/"})
     public String index(@AuthenticationPrincipal PrincipalUserDetail userDetail) {
         log.info("/index GET userDetail:" + userDetail);
-        return "/board/list";
+        return "redirect:/board/list";
     }
 
     @GetMapping("/loginForm")
