@@ -18,7 +18,7 @@ public class BoardRequest {
         @NotBlank(message = "제목을 입력해주세요.")
         private String title;
 
-        @NotBlank(message = "내용을 입력해주세요.")
+        @NotBlank(message = "본문 내용을 입력해주세요.")
         private String content;
 
         private String originalFileName;
@@ -35,7 +35,7 @@ public class BoardRequest {
         @NotBlank(message = "제목을 입력해주세요.")
         private String title;
 
-        @NotBlank(message = "내용을 입력해주세요.")
+        @NotBlank(message = "본문 내용을 입력해주세요.")
         private String content;
 
     }

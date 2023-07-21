@@ -20,6 +20,9 @@ public class ErrorMessage {
     public static final String EMPTY_DATA_BOARD_FOR_SAVE_COMMENT = "댓글 등록을 위한 게시글 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_FOR_REPORT_SAVE = "신고 등록을 위한 데이터가 존재하지 않습니다.";
     public static final String EMPTY_DATA_FOR_FIND_BOARD = "게시글을 찾기 위한 데이터가 존재하지 않습니다.";
+    public static final String EMPTY_DATA_FOR_SAVE_CONTENT = "본문 내용을 입력해주세요.";
+    public static final String EMPTY_DATA_FOR_SAVE_TITLE = "제목을 입력해주세요.";
+
 
     public static final String INVALID_PASSWORD = "패스워드는 4자에서 15자 사이어야 합니다.";
     public static final String INVALID_NICKNAME = "닉네임은 2자에서 15자 사이어야 합니다.";
