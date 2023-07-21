@@ -1,5 +1,7 @@
 package com.fastcampus.board.board.controller;
 
+import com.fastcampus.board.__core.errors.ErrorMessage;
+import com.fastcampus.board.__core.errors.exception.Exception400;
 import com.fastcampus.board.__core.security.PrincipalUserDetail;
 import com.fastcampus.board.board.dto.BoardRequest;
 import com.fastcampus.board.board.dto.BoardResponse;
@@ -17,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,11 +43,15 @@ public class BoardController {
 
     @PostMapping("/save")
     public String save(@AuthenticationPrincipal PrincipalUserDetail userDetail,
-                       @ModelAttribute BoardRequest.saveDTO saveDTO,
+                       @ModelAttribute @Valid BoardRequest.saveDTO saveDTO, Errors errors,
                        @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
+
+        validateInputWithoutHTML(saveDTO.getContent(), ErrorMessage.EMPTY_DATA_FOR_SAVE_CONTENT);
+        validateInputWithoutHTML(saveDTO.getTitle(), ErrorMessage.EMPTY_DATA_FOR_SAVE_TITLE);
 
         User user = userDetail.getUser();
         Long id = boardService.save(saveDTO, thumbnail, user);
+
         return "redirect:/board/" + id;
     }
 
@@ -131,11 +138,14 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute @Valid BoardRequest.UpdateDTO dto) {
+    public String update(@ModelAttribute @Valid BoardRequest.UpdateDTO updateDTO, Errors errors) {
 
-        boardService.update(dto);
+        validateInputWithoutHTML(updateDTO.getContent(), ErrorMessage.EMPTY_DATA_FOR_SAVE_CONTENT);
+        validateInputWithoutHTML(updateDTO.getTitle(), ErrorMessage.EMPTY_DATA_FOR_SAVE_TITLE);
 
-        return "redirect:/board/" + dto.getId();
+        boardService.update(updateDTO);
+
+        return "redirect:/board/" + updateDTO.getId();
     }
 
     @GetMapping("/delete/{id}")
@@ -144,6 +154,15 @@ public class BoardController {
         boardService.delete(id);
 
         return "redirect:/board/list";
+    }
+
+    private void validateInputWithoutHTML(String input, String errorMessage) {
+        String inputWithoutHTML = input.replaceAll("<[^>]*>", "").replace("&nbsp;", " ");
+        System.out.println("Validating input: " + inputWithoutHTML);
+
+        if (inputWithoutHTML.isBlank()) {
+            throw new Exception400(input, errorMessage);
+        }
     }
 
 }
