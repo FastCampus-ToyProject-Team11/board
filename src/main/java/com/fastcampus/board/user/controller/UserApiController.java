@@ -72,5 +72,3 @@ public class UserApiController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
-
-

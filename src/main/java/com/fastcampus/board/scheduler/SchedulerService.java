@@ -32,7 +32,6 @@ public class SchedulerService {
         log.info("스케줄러 잘 동작해 : " + LocalDateTime.now());
 
         List<BoardResponse.UserSummary> userSummaries = boardRepository.getUserSummary();
-        log.info("user Summaries : " + Arrays.toString(userSummaries.toArray()));
 
         userSummaries.forEach(userSummary -> {
             Optional<User> userOptional = userRepository.findById(userSummary.getUserId());
